@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://e1research.github.io/BracU-RCI/sitemap.xml
