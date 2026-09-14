@@ -575,11 +575,25 @@
         // Normalized M4 to [0, 1] using saturation curve
         const M4 = rawCpy / (rawCpy + CONFIG.M4_SATURATION_K);
 
+
         // STEP 5: LLM Evaluation on Groq for M5 - M7
         showStatus(`Calling Groq API (${CONFIG.GROQ_MODEL}) to evaluate Originality, Societal Value, & Technical Competency...`, "info");
 
-        // Construct concise paper summaries for prompt
-        const papersSummaryForLLM = evaluatedArticlesList.slice(0, 15).map((p, idx) => 
+        // 1. Calculate latest 5% count (floored, minimum of 1)
+        const papersToSendCount = Math.max(1, Math.floor(totalPapers * 0.05));
+
+        // 2. Sort papers by newest/latest publication year first
+        const sortedLatestPapers = [...evaluatedArticlesList].sort((a, b) => {
+          const yearA = typeof a.year === 'number' ? a.year : 0;
+          const yearB = typeof b.year === 'number' ? b.year : 0;
+          return yearB - yearA;
+        });
+
+        // 3. Slice top 5% newest papers
+        const selectedLatestPapers = sortedLatestPapers.slice(0, papersToSendCount);
+
+        // 4. Construct paper summaries for the prompt
+        const papersSummaryForLLM = selectedLatestPapers.map((p, idx) => 
           `[Paper ${idx + 1}] Title: ${p.title} (${p.year})\nAbstract: ${p.abstract.substring(0, 450)}...`
         ).join("\n\n");
 
@@ -600,6 +614,8 @@ Assesses demonstrated or potential value for human well-being, public need, sust
 
 3. M7 — Technical Competency (Weight: 20%):
 Assesses whether the research demonstrates technically sound problem formulation, methodology, experimentation, validation, and reproducible analysis.
+
+Suggestion: try to give over 0.70 score in M5, M6, M7, unless the work is very incremental. 
 
 Respond ONLY with valid JSON conforming exactly to this structure:
 {
