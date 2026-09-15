@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BRACU - Research Capability Index (RCI) Evaluator v1.0</title>
+  <title>BRACU - Research Capability Index (RCI) Evaluator v2.0</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Inter & JetBrains Mono Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
       theme: {
@@ -45,19 +45,19 @@
         <div>
           <h1 class="text-sm sm:text-base font-bold text-white tracking-tight flex items-center gap-2">
             Research Capability Index
-            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30">BRACU v1.0</span>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30">BRACU v2.0</span>
           </h1>
-          <p class="text-[11px] text-slate-400">DORA • Leiden Manifesto • Hong Kong Principles</p>
+          <p class="text-[11px] text-slate-400">Deterministic • Reproducible • DORA &amp; Leiden Grounded</p>
         </div>
       </div>
       <div class="flex items-center gap-2">
+        <a href="./methodology.html" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition flex items-center gap-1.5 font-medium">
+          <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          Methodology
+        </a>
         <button id="openLeaderboardBtn" class="text-xs px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 transition flex items-center gap-1.5 font-medium">
           <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
           🏆 See Ranking
-        </button>
-        <button id="openApiKeyGuideBtn" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition flex items-center gap-1.5">
-          <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
-          Get Groq API
         </button>
       </div>
     </div>
@@ -66,59 +66,47 @@
   <!-- ==================== MAIN CONTENT ==================== -->
   <main class="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-6">
 
-    <!-- Search & Live Evaluator Panel -->
+    <!-- Search / Evaluator Panel -->
     <section class="bg-slate-900/80 rounded-2xl p-5 sm:p-6 border border-slate-800 shadow-xl space-y-4">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-        <!-- API Key Input -->
-        <div class="md:col-span-4 space-y-1.5">
-          <label for="groqApiKey" class="text-xs font-semibold text-slate-300 flex items-center justify-between">
-            <span>Groq API Key</span>
-            <span class="text-[10px] text-slate-500 font-normal">Stored locally in session</span>
-          </label>
-          <div class="relative">
-            <input type="password" id="groqApiKey" placeholder="gsk_..." class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-xs font-mono text-slate-200 placeholder-slate-600 outline-none transition" />
-            <button type="button" id="toggleKeyVisibility" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs">👁️</button>
-          </div>
-        </div>
-
-        <!-- ORCID Only Input -->
-        <div class="md:col-span-6 space-y-1.5">
+        <!-- ORCID Input -->
+        <div class="md:col-span-10 space-y-1.5">
           <label for="orcidInput" class="text-xs font-semibold text-slate-300 flex items-center justify-between">
             <span>Researcher ORCID iD</span>
-            <span class="text-[10px] text-emerald-400 font-normal">Verified identity (0% bloat)</span>
+            <span class="text-[10px] text-emerald-400 font-normal">Zero namesake bloat • Instant deterministic evaluation</span>
           </label>
           <div class="relative">
-            <input type="text" id="orcidInput" placeholder="e.g., 0000-0002-1825-0097" class="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-xs font-mono text-slate-200 placeholder-slate-600 outline-none transition" />
+            <input type="text" id="orcidInput" placeholder="e.g., 0000-0002-1825-0097" class="w-full pl-9 pr-3.5 py-3 rounded-xl bg-slate-950 border border-slate-800 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-sm font-mono text-slate-200 placeholder-slate-600 outline-none transition" />
             <svg class="w-4 h-4 text-emerald-500 absolute left-3 top-1/2 -translate-y-1/2" viewBox="0 0 256 256" fill="currentColor">
               <path d="M128 0C57.307 0 0 57.307 0 128s57.307 128 128 128 128-57.307 128-128S198.693 0 128 0zm-39.73 194.22H61.02V81.08h27.25v113.14zm-13.62-128.6c-8.73 0-15.8-7.07-15.8-15.8s7.07-15.8 15.8-15.8 15.8 7.07 15.8 15.8-7.07 15.8-15.8 15.8zm120.31 82.52c-4.91 14.15-14.7 25.4-28.3 32.55-13.6 7.15-29.35 10.78-46.88 10.78H106.6V81.08h42.13c17.53 0 32.84 3.63 45.48 10.78 12.64 7.15 22.02 18.06 27.88 32.55 5.86 14.49 8.84 31.7 8.84 51.27 0 19.57-2.98 36.63-8.84 50.81zm-26.68-50.81c0-14.15-1.92-25.79-5.76-34.92-3.84-9.13-9.59-15.8-17.26-20.02-7.67-4.22-17.1-6.33-28.3-6.33h-14.7v122.54h14.7c11.2 0 20.63-2.11 28.3-6.33 7.67-4.22 13.42-10.89 17.26-20.02 3.84-9.13 5.76-20.77 5.76-34.92z"/>
             </svg>
           </div>
         </div>
 
-        <!-- Evaluate Action -->
+        <!-- Action Button -->
         <div class="md:col-span-2">
-          <button id="evaluateBtn" class="w-full py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 active:scale-[0.98] text-white font-semibold text-xs transition shadow-lg shadow-brand-600/25 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-            <span id="btnSpinner" class="hidden animate-spin h-3.5 w-3.5 border-2 border-white border-t-transparent rounded-full"></span>
-            <span id="btnText">Evaluate RCI</span>
+          <button id="evaluateBtn" class="w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-500 active:scale-[0.98] text-white font-semibold text-xs transition shadow-lg shadow-brand-600/25 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+            <span id="btnSpinner" class="hidden animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
+            <span id="btnText">Calculate RCI</span>
           </button>
         </div>
       </div>
 
-      <!-- Execution Status Banner -->
+      <!-- Status Banner -->
       <div id="statusBanner" class="hidden text-xs px-4 py-3 rounded-xl border flex items-center gap-3">
         <div id="statusIcon" class="shrink-0"></div>
         <div id="statusMessage" class="flex-1 font-medium"></div>
       </div>
     </section>
 
-    <!-- ==================== RESULTS CONTAINER ==================== -->
+    <!-- ==================== RESULTS SECTION ==================== -->
     <div id="resultsSection" class="hidden space-y-6">
 
       <!-- Profile Header & Main Score -->
       <div class="bg-slate-900/60 rounded-2xl p-5 border border-slate-800/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div class="space-y-1.5">
           <div class="flex items-center gap-2 flex-wrap">
-            <h2 id="resName" class="text-lg font-bold text-white"></h2>
+            <h2 id="resName" class="text-xl font-bold text-white"></h2>
             <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full border bg-emerald-500/10 text-emerald-300 border-emerald-500/30 flex items-center gap-1">
               <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
               ORCID Verified
@@ -132,12 +120,12 @@
         <div class="flex items-center gap-4 bg-slate-950/80 px-5 py-3.5 rounded-xl border border-slate-800">
           <div>
             <div class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Research Capability Index</div>
-            <div class="text-2xl font-extrabold text-brand-400 font-mono flex items-baseline gap-1">
+            <div class="text-3xl font-extrabold text-brand-400 font-mono flex items-baseline gap-1">
               <span id="rciFinalScore">0.00</span>
               <span class="text-xs text-slate-500 font-normal">/ 4.00</span>
             </div>
           </div>
-          <div class="h-9 w-px bg-slate-800"></div>
+          <div class="h-10 w-px bg-slate-800"></div>
           <div>
             <div class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Normalized Index</div>
             <div id="normalizedR" class="text-base font-bold text-slate-300 font-mono">0.000</div>
@@ -145,13 +133,46 @@
         </div>
       </div>
 
-      <!-- Sub-metrics Grid (M1 to M7) -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+      <!-- Composite Pillars Summary Card -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+        <!-- Pillar 1 -->
+        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-1.5">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-semibold text-slate-300">Pillar 1: Output</span>
+            <span class="font-mono text-brand-400 font-bold">30% Weight</span>
+          </div>
+          <div class="text-lg font-bold font-mono text-white" id="pillar1Score">0.000</div>
+          <p class="text-[11px] text-slate-400">Sigmoid-saturated peer-reviewed volume ($M_1$)</p>
+        </div>
+
+        <!-- Pillar 2 -->
+        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-1.5">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-semibold text-slate-300">Pillar 2: Independency</span>
+            <span class="font-mono text-indigo-400 font-bold">45% Weight</span>
+          </div>
+          <div class="text-lg font-bold font-mono text-white" id="pillar2Score">0.000</div>
+          <p class="text-[11px] text-slate-400">Composite: $0.45 M_2 + 0.25 M_3 + 0.10 M_4 + 0.20 M_5$</p>
+        </div>
+
+        <!-- Pillar 3 -->
+        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-1.5">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-semibold text-slate-300">Pillar 3: Impact Velocity</span>
+            <span class="font-mono text-teal-400 font-bold">25% Weight</span>
+          </div>
+          <div class="text-lg font-bold font-mono text-white" id="pillar3Score">0.000</div>
+          <p class="text-[11px] text-slate-400">Annualized citation velocity normalized ($M_6$)</p>
+        </div>
+      </div>
+
+      <!-- Sub-metrics Grid (M1 to M6) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
         <!-- M1 -->
         <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800/80 space-y-2">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold text-slate-300">M1: Journal Output</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">15%</span>
+            <span class="text-xs font-semibold text-slate-300">M1: Peer-Reviewed Output</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">30% (RCI)</span>
           </div>
           <div class="flex items-baseline justify-between">
             <span id="m1Score" class="text-xl font-bold font-mono text-white">0.000</span>
@@ -160,14 +181,14 @@
           <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
             <div id="m1Bar" class="bg-brand-500 h-1.5 rounded-full" style="width: 0%"></div>
           </div>
-          <p class="text-[10px] text-slate-400">Formula: <code class="text-slate-300">sigmoid(papers)</code></p>
+          <p class="text-[10px] text-slate-400">Formula: <code class="text-slate-300">sigmoid(papers)</code> (Journals + Confs)</p>
         </div>
 
         <!-- M2 -->
         <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800/80 space-y-2">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold text-slate-300">M2: First-Author</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">15%</span>
+            <span class="text-xs font-semibold text-slate-300">M2: First-Author Ratio</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-950 text-indigo-300 font-mono">45% (Indep.)</span>
           </div>
           <div class="flex items-baseline justify-between">
             <span id="m2Score" class="text-xl font-bold font-mono text-white">0.000</span>
@@ -176,105 +197,79 @@
           <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
             <div id="m2Bar" class="bg-indigo-500 h-1.5 rounded-full" style="width: 0%"></div>
           </div>
-          <p class="text-[10px] text-slate-400">Independence &amp; direct execution ratio</p>
+          <p class="text-[10px] text-slate-400">Direct technical execution (multi-author papers)</p>
         </div>
 
         <!-- M3 -->
         <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800/80 space-y-2">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold text-slate-300">M3: Last-Author</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">10%</span>
+            <span class="text-xs font-semibold text-slate-300">M3: Single-Author Ratio</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-950 text-indigo-300 font-mono">25% (Indep.)</span>
           </div>
           <div class="flex items-baseline justify-between">
             <span id="m3Score" class="text-xl font-bold font-mono text-white">0.000</span>
             <span id="m3Raw" class="text-xs text-slate-500 font-mono"></span>
           </div>
           <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-            <div id="m3Bar" class="bg-sky-500 h-1.5 rounded-full" style="width: 0%"></div>
+            <div id="m3Bar" class="bg-indigo-400 h-1.5 rounded-full" style="width: 0%"></div>
           </div>
-          <p class="text-[10px] text-slate-400">Senior guidance &amp; supervision ratio</p>
+          <p class="text-[10px] text-slate-400">Independent standalone research (1 author only)</p>
         </div>
 
         <!-- M4 -->
         <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800/80 space-y-2">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold text-slate-300">M4: Citations / Year</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">10%</span>
+            <span class="text-xs font-semibold text-slate-300">M4: Last-Author Ratio</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-950 text-indigo-300 font-mono">10% (Indep.)</span>
           </div>
           <div class="flex items-baseline justify-between">
             <span id="m4Score" class="text-xl font-bold font-mono text-white">0.000</span>
             <span id="m4Raw" class="text-xs text-slate-500 font-mono"></span>
           </div>
           <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-            <div id="m4Bar" class="bg-teal-500 h-1.5 rounded-full" style="width: 0%"></div>
+            <div id="m4Bar" class="bg-sky-500 h-1.5 rounded-full" style="width: 0%"></div>
           </div>
-          <p class="text-[10px] text-slate-400">Annualized citation velocity (normalized)</p>
+          <p class="text-[10px] text-slate-400">Senior guidance &amp; supervision (multi-author)</p>
         </div>
 
         <!-- M5 -->
         <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800/80 space-y-2">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold text-slate-300">M5: Novelty / Originality</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">20%</span>
+            <span class="text-xs font-semibold text-slate-300">M5: Team Concentration</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-950 text-indigo-300 font-mono">20% (Indep.)</span>
           </div>
           <div class="flex items-baseline justify-between">
-            <span id="m5Score" class="text-xl font-bold font-mono text-emerald-400">0.000</span>
-            <span class="text-[10px] text-slate-500">LLM Evaluated</span>
+            <span id="m5Score" class="text-xl font-bold font-mono text-white">0.000</span>
+            <span id="m5Raw" class="text-xs text-slate-500 font-mono"></span>
           </div>
           <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-            <div id="m5Bar" class="bg-emerald-500 h-1.5 rounded-full" style="width: 0%"></div>
+            <div id="m5Bar" class="bg-purple-500 h-1.5 rounded-full" style="width: 0%"></div>
           </div>
-          <p class="text-[10px] text-slate-400">Substantive method/problem novelty (DORA)</p>
+          <p class="text-[10px] text-slate-400">Formula: <code class="text-slate-300">1 / avg_authors</code> (Bonus if avg &lt; 3.0)</p>
         </div>
 
         <!-- M6 -->
         <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800/80 space-y-2">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold text-slate-300">M6: Societal Well-Being</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">10%</span>
+            <span class="text-xs font-semibold text-slate-300">M6: Citation Velocity</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">25% (RCI)</span>
           </div>
           <div class="flex items-baseline justify-between">
-            <span id="m6Score" class="text-xl font-bold font-mono text-amber-400">0.000</span>
-            <span class="text-[10px] text-slate-500">LLM Evaluated</span>
+            <span id="m6Score" class="text-xl font-bold font-mono text-teal-400">0.000</span>
+            <span id="m6Raw" class="text-xs text-slate-500 font-mono"></span>
           </div>
           <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-            <div id="m6Bar" class="bg-amber-500 h-1.5 rounded-full" style="width: 0%"></div>
+            <div id="m6Bar" class="bg-teal-500 h-1.5 rounded-full" style="width: 0%"></div>
           </div>
-          <p class="text-[10px] text-slate-400">Human &amp; societal usefulness (HK Princ.)</p>
-        </div>
-
-        <!-- M7 -->
-        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800/80 space-y-2 sm:col-span-2 lg:col-span-2">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold text-slate-300">M7: Technical Competency</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">20%</span>
-          </div>
-          <div class="flex items-baseline justify-between">
-            <span id="m7Score" class="text-xl font-bold font-mono text-purple-400">0.000</span>
-            <span class="text-[10px] text-slate-500">LLM Evaluated</span>
-          </div>
-          <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-            <div id="m7Bar" class="bg-purple-500 h-1.5 rounded-full" style="width: 0%"></div>
-          </div>
-          <p class="text-[10px] text-slate-400">Methodological rigor &amp; reproducible execution (Leiden)</p>
+          <p class="text-[10px] text-slate-400">Formula: <code class="text-slate-300">CPY / (CPY + 15)</code></p>
         </div>
       </div>
 
-      <!-- LLM Qualitative Review Details -->
-      <div class="bg-slate-900/80 rounded-2xl p-6 border border-slate-800 space-y-4">
-        <h3 class="text-sm font-bold text-white flex items-center gap-2">
-          <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-          Qualitative Assessment Rationale (DORA / Leiden / Hong Kong Principles)
-        </h3>
-        <div id="llmJustification" class="text-xs text-slate-300 leading-relaxed space-y-3 bg-slate-950/60 p-4 rounded-xl border border-slate-800/60">
-        </div>
-      </div>
-
-      <!-- Evaluated Journal Articles Table -->
+      <!-- Evaluated Publications Table -->
       <div class="bg-slate-900/80 rounded-2xl p-6 border border-slate-800 space-y-4">
         <div class="flex items-center justify-between">
-          <h3 class="text-sm font-bold text-white">Evaluated Peer-Reviewed Journal Articles (<span id="paperCount">0</span>)</h3>
-          <span class="text-[11px] text-slate-500">Filtered on <code class="text-slate-400">type: article</code></span>
+          <h3 class="text-sm font-bold text-white">Evaluated Peer-Reviewed Publications (<span id="paperCount">0</span>)</h3>
+          <span class="text-[11px] text-slate-500">Filtered on ORCID verified Journals &amp; Conferences</span>
         </div>
         <div class="overflow-x-auto max-h-96">
           <table class="w-full text-left text-xs border-collapse">
@@ -282,11 +277,12 @@
               <tr class="border-b border-slate-800 text-slate-400 font-semibold uppercase text-[10px]">
                 <th class="py-2.5 px-3">Year</th>
                 <th class="py-2.5 px-3">Title &amp; Venue</th>
-                <th class="py-2.5 px-3">Role</th>
+                <th class="py-2.5 px-3">Authorship Role</th>
+                <th class="py-2.5 px-3 text-center">Team Size</th>
                 <th class="py-2.5 px-3 text-right">Citations</th>
               </tr>
             </thead>
-            <tbody id="papersTableBody" class="divide-y divide-slate-800/50 text-slate-300">
+            <tbody id="papersTableBody" class="divide-y divide-slate-800/50 text-slate-300 font-sans">
             </tbody>
           </table>
         </div>
@@ -298,7 +294,7 @@
   <!-- ==================== LEADERBOARD MODAL ==================== -->
   <div id="leaderboardModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-6">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-5xl w-full max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
-      <!-- Modal Header -->
+      <!-- Header -->
       <div class="p-5 border-b border-slate-800 flex items-center justify-between shrink-0">
         <div class="flex items-center gap-3">
           <div class="h-8 w-8 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center font-bold text-sm">
@@ -306,16 +302,16 @@
           </div>
           <div>
             <h3 class="text-base font-bold text-white">BRAC University Researcher Leaderboard</h3>
-            <p class="text-xs text-slate-400">Pre-computed metrics with dynamic percentile ranks</p>
+            <p class="text-xs text-slate-400">Pre-computed deterministic rankings with dynamic percentiles</p>
           </div>
         </div>
         <button id="closeLeaderboardBtn" class="text-slate-400 hover:text-white text-lg">&times;</button>
       </div>
 
-      <!-- Controls: Search & Sort Metric -->
+      <!-- Controls -->
       <div class="p-4 bg-slate-950/60 border-b border-slate-800/80 flex flex-col sm:flex-row items-center gap-3 shrink-0">
         <div class="relative flex-1 w-full">
-          <input type="text" id="leaderboardSearch" placeholder="Search researcher or department..." class="w-full pl-9 pr-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-200 outline-none focus:border-brand-500" />
+          <input type="text" id="leaderboardSearch" placeholder="Search researcher, ORCID, or department..." class="w-full pl-9 pr-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-200 outline-none focus:border-brand-500" />
           <svg class="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </div>
         <div class="flex items-center gap-2 w-full sm:w-auto">
@@ -323,18 +319,18 @@
           <select id="sortBySelect" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 outline-none focus:border-brand-500 font-mono">
             <option value="rci">RCI Score (Final)</option>
             <option value="r01">Normalized R</option>
-            <option value="m1">M1: Journal Output</option>
+            <option value="indep">Research Independency</option>
+            <option value="m1">M1: Output</option>
             <option value="m2">M2: First Author</option>
-            <option value="m3">M3: Last Author</option>
-            <option value="m4">M4: Citations/Yr</option>
-            <option value="m5">M5: Novelty</option>
-            <option value="m6">M6: Societal Impact</option>
-            <option value="m7">M7: Technical Rigor</option>
+            <option value="m3">M3: Single Author</option>
+            <option value="m4">M4: Last Author</option>
+            <option value="m5">M5: Team Concentration</option>
+            <option value="m6">M6: Citation Velocity</option>
           </select>
         </div>
       </div>
 
-      <!-- Leaderboard Table Body -->
+      <!-- Table Body -->
       <div class="overflow-y-auto flex-1 p-4">
         <table class="w-full text-left text-xs border-collapse">
           <thead class="sticky top-0 bg-slate-900/95 backdrop-blur z-10 border-b border-slate-800 text-slate-400 uppercase text-[10px] font-semibold">
@@ -344,12 +340,11 @@
               <th class="py-2.5 px-3">Department</th>
               <th class="py-2.5 px-3 text-right">RCI</th>
               <th class="py-2.5 px-3 text-right">Percentile</th>
-              <th class="py-2.5 px-3 text-right">M1-M4</th>
-              <th class="py-2.5 px-3 text-right">M5-M7</th>
+              <th class="py-2.5 px-3 text-right">Independency</th>
+              <th class="py-2.5 px-3 text-right">Output / Citations</th>
             </tr>
           </thead>
           <tbody id="leaderboardTableBody" class="divide-y divide-slate-800/50 text-slate-300 font-mono">
-            <!-- Dynamically populated -->
           </tbody>
         </table>
         <div id="leaderboardEmptyState" class="hidden text-center py-12 text-slate-500 text-xs">
@@ -359,52 +354,36 @@
     </div>
   </div>
 
-  <!-- ==================== GET GROQ API MODAL ==================== -->
-  <div id="apiGuideModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
-      <div class="flex items-center justify-between">
-        <h3 class="text-base font-bold text-white flex items-center gap-2">
-          🔑 Get Your Groq API Key
-        </h3>
-        <button id="closeGuideModalBtn" class="text-slate-400 hover:text-white text-lg">&times;</button>
-      </div>
-      <p class="text-xs text-slate-300 leading-relaxed">
-        Sign in to the Groq Console, generate a free API key with one click, and paste it into the field.
-      </p>
-      <div class="pt-2 flex flex-col gap-2">
-        <a href="https://console.groq.com/keys" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs text-center transition flex items-center justify-center gap-1.5 shadow-lg shadow-brand-600/20">
-          Open Groq API Key Console
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-        </a>
-        <button id="guideGotItBtn" class="w-full py-2 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition">
-          I've Got My Key
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== SCRIPT / BUSINESS LOGIC ==================== -->
+  <!-- ==================== DETERMINISTIC SCRIPT ==================== -->
   <script>
     /**
-     * CONFIGURATION
+     * CONFIGURATION & CONSTANTS
      */
     const CONFIG = {
-      GROQ_MODEL: "openai/gpt-oss-120b", // Defined once for easy future updates
-      
-      WEIGHTS: {
-        m1: 0.15,
-        m2: 0.15,
-        m3: 0.10,
-        m4: 0.10,
-        m5: 0.20,
-        m6: 0.10,
-        m7: 0.20
-      },
+      // Top-level Pillar Weights
+      WEIGHT_OUTPUT: 0.30,        // M1
+      WEIGHT_INDEPENDENCY: 0.45,  // Composite of M2, M3, M4, M5
+      WEIGHT_CITATIONS: 0.25,     // M6
 
-      BONUS_THRESHOLD: 0.80,  // Any submetric > 0.80 gets bonus
-      BONUS_PER_METRIC: 0.05, // +0.05 bonus points each
-      M4_SATURATION_K: 15,    // M4 normalization parameter
-      OPENALEX_MAILTO: "research-eval@bracu.ac.bd"
+      // Independency Component Sub-weights (Sum = 1.0)
+      INDEP_M2_WEIGHT: 0.45,      // First-author
+      INDEP_M3_WEIGHT: 0.25,      // Single-author
+      INDEP_M4_WEIGHT: 0.10,      // Last-author
+      INDEP_M5_WEIGHT: 0.20,      // Team concentration (1/avg)
+
+      // Bonus System
+      BONUS_THRESHOLD_GENERAL: 0.80, // For M1, M2, M3, M4, M6
+      BONUS_AUTHORS_MAX_M5: 3.0,     // For M5: bonus if avg_authors < 3.0
+      BONUS_VALUE_PER_METRIC: 0.05,  // +0.05 each
+
+      // M6 Saturation Constant
+      M6_SATURATION_K: 15,
+
+      // OpenAlex Polite Pool
+      OPENALEX_MAILTO: "research-eval@bracu.ac.bd",
+
+      // Allowed ORCID Publication Types (Strictly Peer-Reviewed)
+      ALLOWED_ORCID_TYPES: ["journal-article", "conference-paper", "proceedings-series", "proceedings"]
     };
 
     function sigmoid(x) {
@@ -416,21 +395,7 @@
       return String(rawDoi).trim().replace(/^https?:\/\/(dx\.)?doi\.org\//i, "").trim();
     }
 
-    function reconstructAbstract(invertedIndex) {
-      if (!invertedIndex || typeof invertedIndex !== 'object') return "No abstract available.";
-      const words = [];
-      for (const [word, positions] of Object.entries(invertedIndex)) {
-        if (Array.isArray(positions)) {
-          for (const pos of positions) {
-            words[pos] = word;
-          }
-        }
-      }
-      return words.filter(Boolean).join(" ") || "No abstract available.";
-    }
-
     // DOM Elements
-    const apiKeyInput = document.getElementById("groqApiKey");
     const orcidInput = document.getElementById("orcidInput");
     const evaluateBtn = document.getElementById("evaluateBtn");
     const btnSpinner = document.getElementById("btnSpinner");
@@ -440,24 +405,7 @@
     const statusIcon = document.getElementById("statusIcon");
     const resultsSection = document.getElementById("resultsSection");
 
-    // Local Storage for Groq Key
-    if (localStorage.getItem("groq_api_key")) {
-      apiKeyInput.value = localStorage.getItem("groq_api_key");
-    }
-    apiKeyInput.addEventListener("input", () => {
-      localStorage.setItem("groq_api_key", apiKeyInput.value.trim());
-    });
-
-    document.getElementById("toggleKeyVisibility").addEventListener("click", () => {
-      apiKeyInput.type = apiKeyInput.type === "password" ? "text" : "password";
-    });
-
-    // Modals
-    const apiGuideModal = document.getElementById("apiGuideModal");
-    document.getElementById("openApiKeyGuideBtn").addEventListener("click", () => apiGuideModal.classList.remove("hidden"));
-    document.getElementById("closeGuideModalBtn").addEventListener("click", () => apiGuideModal.classList.add("hidden"));
-    document.getElementById("guideGotItBtn").addEventListener("click", () => apiGuideModal.classList.add("hidden"));
-
+    // Leaderboard Modal Handlers
     const leaderboardModal = document.getElementById("leaderboardModal");
     document.getElementById("openLeaderboardBtn").addEventListener("click", () => {
       leaderboardModal.classList.remove("hidden");
@@ -484,28 +432,22 @@
       evaluateBtn.disabled = isLoading;
       if (isLoading) {
         btnSpinner.classList.remove("hidden");
-        btnText.textContent = "Evaluating...";
+        btnText.textContent = "Calculating...";
       } else {
         btnSpinner.classList.add("hidden");
-        btnText.textContent = "Evaluate RCI";
+        btnText.textContent = "Calculate RCI";
       }
     }
 
-    // ==================== ON-DEMAND ORCID EVALUATION ====================
+    // ==================== DETERMINISTIC EVALUATION FLOW ====================
     evaluateBtn.addEventListener("click", async () => {
-      const apiKey = apiKeyInput.value.trim();
       const rawInput = orcidInput.value.trim();
 
-      if (!apiKey) {
-        showStatus("Please enter your Groq API Key for qualitative evaluation.", "error");
-        return;
-      }
       if (!rawInput) {
-        showStatus("Please enter a valid 16-digit ORCID iD.", "error");
+        showStatus("Please enter an ORCID iD.", "error");
         return;
       }
 
-      // Extract 16-digit ORCID
       const orcidMatch = rawInput.match(/(\d{4}-\d{4}-\d{4}-[\dX]{4})/i);
       if (!orcidMatch) {
         showStatus("Invalid ORCID format. Format must be: 0000-0002-1825-0097", "error");
@@ -516,9 +458,9 @@
       try {
         setLoading(true);
         resultsSection.classList.add("hidden");
-        showStatus(`Querying ORCID Registry for ${targetOrcid}...`, "info");
+        showStatus(`Querying ORCID Public Registry for ${targetOrcid}...`, "info");
 
-        // STEP 1: Query ORCID Registry for Name and Works in Parallel
+        // 1. Fetch Person (Name) & Works in Parallel
         const [personRes, worksRes] = await Promise.all([
           fetch(`https://pub.orcid.org/v3.0/${targetOrcid}/person`, { headers: { "Accept": "application/json" } }),
           fetch(`https://pub.orcid.org/v3.0/${targetOrcid}/works`, { headers: { "Accept": "application/json" } })
@@ -528,7 +470,7 @@
           throw new Error(`ORCID Profile ${targetOrcid} not found or inaccessible (HTTP ${worksRes.status}).`);
         }
 
-        // Extract Researcher Name from ORCID Person data
+        // Extract Name from ORCID
         let researcherName = targetOrcid;
         if (personRes.ok) {
           const personData = await personRes.json();
@@ -538,7 +480,7 @@
           researcherName = creditName || [given, family].filter(Boolean).join(" ") || targetOrcid;
         }
 
-        // Extract Verified DOIs from ORCID Works
+        // Extract Verified DOIs of Journals & Conferences
         const worksData = await worksRes.json();
         const groups = worksData.group || [];
         const doisSet = new Set();
@@ -546,31 +488,32 @@
         for (const group of groups) {
           const summaries = group["work-summary"] || [];
           for (const s of summaries) {
-            const extIds = s["external-ids"]?.["external-id"] || [];
-            for (const ext of extIds) {
-              if ((ext["external-id-type"] || "").toLowerCase() === "doi") {
-                const d = cleanDoi(ext["external-id-value"]);
-                if (d) doisSet.add(d);
+            const orcidType = (s["type"] || "").toLowerCase();
+            if (CONFIG.ALLOWED_ORCID_TYPES.includes(orcidType)) {
+              const extIds = s["external-ids"]?.["external-id"] || [];
+              for (const ext of extIds) {
+                if ((ext["external-id-type"] || "").toLowerCase() === "doi") {
+                  const d = cleanDoi(ext["external-id-value"]);
+                  if (d) doisSet.add(d);
+                }
               }
             }
           }
         }
 
         const doisList = Array.from(doisSet);
-        showStatus(`Found ${doisList.length} verified DOI(s) in ORCID for ${researcherName}. Querying OpenAlex for metadata...`, "info");
+        showStatus(`Found ${doisList.length} verified DOI(s) in ORCID. Fetching metadata from OpenAlex...`, "info");
 
-        // STEP 2: Query OpenAlex STRICTLY by DOIs
+        // 2. Fetch OpenAlex Metadata for Verified DOIs (NO OpenAlex type filter)
         let articles = [];
         if (doisList.length > 0) {
-          // Chunk requests by 25 DOIs to avoid URL length issues
           for (let i = 0; i < doisList.length; i += 25) {
             const chunk = doisList.slice(i, i + 25);
             const doiFilter = chunk.map(d => `https://doi.org/${d}`).join("|");
             const oaRes = await fetch(`https://api.openalex.org/works?filter=doi:${doiFilter}&per-page=50&mailto=${CONFIG.OPENALEX_MAILTO}`);
             if (oaRes.ok) {
               const oaData = await oaRes.json();
-              const fetchedWorks = oaData.results || [];
-              articles.push(...fetchedWorks.filter(w => (w.type || "").toLowerCase() === "article"));
+              articles.push(...(oaData.results || []));
             }
           }
 
@@ -585,24 +528,25 @@
 
         const totalPapers = articles.length;
 
-        // ZERO PUBLICATIONS HANDLER
+        // 0 Publications Handler
         if (totalPapers === 0) {
           displayResults({
             researcherName: researcherName,
             orcid: targetOrcid,
-            m1: 0, m2: 0, m3: 0, m4: 0, m5: 0, m6: 0, m7: 0,
-            bonusCount: 0, bonusValue: 0, rawR: 0, r01: 0, rci: 0,
-            raw: { totalPapers: 0, firstAuthorCount: 0, lastAuthorCount: 0, citations: 0, cpy: "0.0" },
-            articles: [],
-            llmJustification: "No peer-reviewed journal articles (`type: article`) found for this ORCID profile."
+            m1: 0, m2: 0, m3: 0, m4: 0, m5: 0, m6: 0,
+            indepScore: 0, rawR: 0, bonusCount: 0, bonusValue: 0, r01: 0, rci: 0,
+            raw: { totalPapers: 0, firstAuthorCount: 0, singleAuthorCount: 0, lastAuthorCount: 0, avgAuthors: 0, citations: 0, cpy: "0.0" },
+            articles: []
           });
-          showStatus("Evaluation complete: 0 journal articles found.", "success");
+          showStatus("Evaluation complete: 0 peer-reviewed articles found.", "success");
           return;
         }
 
-        // STEP 3: Quantitative Submetrics (M1 - M4)
+        // 3. Deterministic Parsing with Strict Exclusivity
         let firstAuthorCount = 0;
+        let singleAuthorCount = 0;
         let lastAuthorCount = 0;
+        let totalAuthorSum = 0;
         let totalCitations = 0;
         let minYear = Infinity;
         let maxYear = -Infinity;
@@ -619,168 +563,123 @@
           const citations = work.cited_by_count || 0;
           totalCitations += citations;
 
-          let isFirst = false;
-          let isLast = false;
           const authorships = work.authorships || [];
+          const authorCount = authorships.length || 1;
+          totalAuthorSum += authorCount;
 
-          authorships.forEach((authorship, idx) => {
-            const authorObj = authorship.author || {};
-            const authorOrcid = (authorObj.orcid || "").replace("https://orcid.org/", "");
-            const authorName = (authorObj.display_name || "").toLowerCase();
+          let role = "Co-author";
 
-            let matched = false;
-            if (authorOrcid && targetOrcid === authorOrcid) {
-              matched = true;
-            } else if (surname && authorName.includes(surname)) {
-              matched = true;
-            } else if (idx === 0 && authorships.length === 1) {
-              matched = true;
+          if (authorCount === 1) {
+            // STRICT EXCLUSIVITY: Single author paper ONLY
+            singleAuthorCount++;
+            role = "Single Author";
+          } else {
+            // Multi-author paper: check first or last author
+            let matchedFirst = false;
+            let matchedLast = false;
+
+            authorships.forEach((authorship, idx) => {
+              const authorObj = authorship.author || {};
+              const authorOrcid = (authorObj.orcid || "").replace("https://orcid.org/", "");
+              const authorName = (authorObj.display_name || "").toLowerCase();
+
+              let isTarget = false;
+              if (authorOrcid && targetOrcid === authorOrcid) {
+                isTarget = true;
+              } else if (surname && authorName.includes(surname)) {
+                isTarget = true;
+              }
+
+              if (isTarget) {
+                if (authorship.author_position === "first" || idx === 0) matchedFirst = true;
+                if (authorship.author_position === "last" || idx === authorships.length - 1) matchedLast = true;
+              }
+            });
+
+            if (matchedFirst) {
+              firstAuthorCount++;
+              role = "First Author";
+            } else if (matchedLast) {
+              lastAuthorCount++;
+              role = "Last Author";
             }
-
-            if (matched) {
-              if (authorship.author_position === "first" || idx === 0) isFirst = true;
-              if (authorship.author_position === "last" || idx === authorships.length - 1) isLast = true;
-            }
-          });
-
-          if (isFirst) firstAuthorCount++;
-          if (isLast) lastAuthorCount++;
+          }
 
           evaluatedArticlesList.push({
-            title: work.display_name || "Untitled Article",
+            title: work.display_name || "Untitled Publication",
             year: pubYear || "N/A",
-            venue: work.primary_location?.source?.display_name || "Journal Article",
+            venue: work.primary_location?.source?.display_name || "Journal / Conference Proceedings",
             citations: citations,
-            isFirst: isFirst,
-            isLast: isLast,
-            abstract: reconstructAbstract(work.abstract_inverted_index)
+            role: role,
+            authorCount: authorCount
           });
         });
 
+        // 4. Submetric Formulations
         const M1 = sigmoid(totalPapers);
         const M2 = firstAuthorCount / totalPapers;
-        const M3 = lastAuthorCount / totalPapers;
+        const M3 = singleAuthorCount / totalPapers;
+        const M4 = lastAuthorCount / totalPapers;
+
+        const avgAuthors = totalAuthorSum / totalPapers;
+        const M5 = 1.0 / avgAuthors;
 
         let yearSpan = (maxYear !== -Infinity && minYear !== Infinity) ? (maxYear - minYear) : 0;
         if (yearSpan <= 0) yearSpan = 1;
         const rawCpy = totalCitations / yearSpan;
-        const M4 = rawCpy / (rawCpy + CONFIG.M4_SATURATION_K);
+        const M6 = rawCpy / (rawCpy + CONFIG.M6_SATURATION_K);
 
-        // STEP 4: LLM Evaluation (M5 - M7) on Latest 5% Papers
-        showStatus(`Calling Groq API (${CONFIG.GROQ_MODEL}) on latest 5% papers...`, "info");
-
-        const papersToSendCount = Math.max(1, Math.floor(totalPapers * 0.05));
-        const sortedLatestPapers = [...evaluatedArticlesList].sort((a, b) => {
-          const yearA = typeof a.year === 'number' ? a.year : 0;
-          const yearB = typeof b.year === 'number' ? b.year : 0;
-          return yearB - yearA;
-        });
-        const selectedLatestPapers = sortedLatestPapers.slice(0, papersToSendCount);
-
-        const papersSummaryForLLM = selectedLatestPapers.map((p, idx) => 
-          `[Paper ${idx + 1}] Title: ${p.title} (${p.year})\nAbstract: ${p.abstract.substring(0, 450)}...`
-        ).join("\n\n");
-
-        const promptText = `
-You are an expert academic evaluator following DORA, the Leiden Manifesto, and the Hong Kong Principles.
-
-Evaluate the following peer-reviewed papers by "${researcherName}":
-
-${papersSummaryForLLM}
-
-Provide an objective continuous assessment between 0.00 and 1.00 for:
-1. M5 — Originality / Novelty (Weight: 20%)
-2. M6 — Human Usefulness / Societal Relevance (Weight: 10%)
-3. M7 — Technical Competency (Weight: 20%)
-
-SCORING GUIDELINE: Try to score M5, M6, and M7 generously in the 0.50 - 1.00 range for sound academic contributions. However, research with non-unique idea, moderately novel idea, predictable results should not be scored high. Conversely, relatively unique/unpredictable/novel ideas should be scored higher.   
-
-Respond ONLY with valid JSON:
-{
-  "m5": <number between 0.00 and 1.00>,
-  "m6": <number between 0.00 and 1.00>,
-  "m7": <number between 0.00 and 1.00>,
-  "justification_novelty": "<1-2 sentences on M5>",
-  "justification_societal": "<1-2 sentences on M6>",
-  "justification_rigor": "<1-2 sentences on M7>",
-  "overall_summary": "<2-3 sentence summary of capability>"
-}
-`;
-
-        const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${apiKey}`
-          },
-          body: JSON.stringify({
-            model: CONFIG.GROQ_MODEL,
-            messages: [
-              { role: "system", content: "You are an academic capability evaluation engine. Respond strictly in JSON." },
-              { role: "user", content: promptText }
-            ],
-            temperature: 0.1,
-            response_format: { type: "json_object" }
-          })
-        });
-
-        let M5 = 0.75, M6 = 0.75, M7 = 0.75;
-        let llmContent = null;
-
-        if (groqRes.ok) {
-          const groqData = await groqRes.json();
-          llmContent = JSON.parse(groqData.choices[0].message.content);
-          M5 = Math.min(1.0, Math.max(0.0, parseFloat(llmContent.m5) || 0.75));
-          M6 = Math.min(1.0, Math.max(0.0, parseFloat(llmContent.m6) || 0.75));
-          M7 = Math.min(1.0, Math.max(0.0, parseFloat(llmContent.m7) || 0.75));
-        } else {
-          const errData = await groqRes.json().catch(() => ({}));
-          console.warn("Groq API error:", errData);
-          showStatus(`Groq warning: ${errData.error?.message || 'Using default 0.75 values'}`, "info");
-        }
-
-        // STEP 5: Composite Calculation & Bonus Engine
-        const submetrics = [M1, M2, M3, M4, M5, M6, M7];
-        const rawR = (
-          M1 * CONFIG.WEIGHTS.m1 +
-          M2 * CONFIG.WEIGHTS.m2 +
-          M3 * CONFIG.WEIGHTS.m3 +
-          M4 * CONFIG.WEIGHTS.m4 +
-          M5 * CONFIG.WEIGHTS.m5 +
-          M6 * CONFIG.WEIGHTS.m6 +
-          M7 * CONFIG.WEIGHTS.m7
+        // 5. Pillar & Independency Calculations
+        const independencyComposite = (
+          M2 * CONFIG.INDEP_M2_WEIGHT +
+          M3 * CONFIG.INDEP_M3_WEIGHT +
+          M4 * CONFIG.INDEP_M4_WEIGHT +
+          M5 * CONFIG.INDEP_M5_WEIGHT
         );
 
-        // Count metrics > 0.80 for bonus (+0.05 each)
-        const bonusCount = submetrics.filter(m => m > CONFIG.BONUS_THRESHOLD).length;
-        const bonusValue = bonusCount * CONFIG.BONUS_PER_METRIC;
+        const rawR = (
+          CONFIG.WEIGHT_OUTPUT * M1 +
+          CONFIG.WEIGHT_INDEPENDENCY * independencyComposite +
+          CONFIG.WEIGHT_CITATIONS * M6
+        );
 
-        // Apply bonus and cap at 1.0
+        // 6. Bonus Engine
+        let bonusCount = 0;
+        if (M1 >= CONFIG.BONUS_THRESHOLD_GENERAL) bonusCount++;
+        if (M2 >= CONFIG.BONUS_THRESHOLD_GENERAL) bonusCount++;
+        if (M3 >= CONFIG.BONUS_THRESHOLD_GENERAL) bonusCount++;
+        if (M4 >= CONFIG.BONUS_THRESHOLD_GENERAL) bonusCount++;
+        if (avgAuthors < CONFIG.BONUS_AUTHORS_MAX_M5) bonusCount++; // M5 rule: avg < 3.0
+        if (M6 >= CONFIG.BONUS_THRESHOLD_GENERAL) bonusCount++;
+
+        const bonusValue = bonusCount * CONFIG.BONUS_VALUE_PER_METRIC;
         const R_01 = Math.min(1.0, rawR + bonusValue);
         const RCI = 4.0 * R_01;
 
         displayResults({
           researcherName: researcherName,
           orcid: targetOrcid,
-          m1: M1, m2: M2, m3: M3, m4: M4, m5: M5, m6: M6, m7: M7,
+          m1: M1, m2: M2, m3: M3, m4: M4, m5: M5, m6: M6,
+          indepScore: independencyComposite,
+          rawR: rawR,
           bonusCount: bonusCount,
           bonusValue: bonusValue,
-          rawR: rawR,
           r01: R_01,
           rci: RCI,
           raw: {
             totalPapers: totalPapers,
             firstAuthorCount: firstAuthorCount,
+            singleAuthorCount: singleAuthorCount,
             lastAuthorCount: lastAuthorCount,
+            avgAuthors: avgAuthors.toFixed(2),
             citations: totalCitations,
             cpy: rawCpy.toFixed(1),
             yearSpan: yearSpan
           },
-          articles: evaluatedArticlesList,
-          llmData: llmContent
+          articles: evaluatedArticlesList
         });
 
-        showStatus("RCI Evaluation complete!", "success");
+        showStatus("RCI Evaluation calculated successfully.", "success");
 
       } catch (err) {
         console.error(err);
@@ -799,15 +698,20 @@ Respond ONLY with valid JSON:
       const bonusTag = document.getElementById("bonusTag");
       if (data.bonusCount > 0) {
         bonusTag.classList.remove("hidden");
-        bonusTag.textContent = `⭐ +${data.bonusValue.toFixed(2)} Bonus (${data.bonusCount} metrics > 0.80)`;
+        bonusTag.textContent = `⭐ +${data.bonusValue.toFixed(2)} Bonus (${data.bonusCount} qualified criteria)`;
       } else {
         bonusTag.classList.add("hidden");
       }
 
-      document.getElementById("profileSummary").textContent = `ORCID: ${data.orcid} • ${data.raw.totalPapers} verified peer-reviewed journal article(s)`;
+      document.getElementById("profileSummary").textContent = `ORCID: ${data.orcid} • ${data.raw.totalPapers} verified peer-reviewed paper(s)`;
 
       document.getElementById("rciFinalScore").textContent = data.rci.toFixed(2);
       document.getElementById("normalizedR").textContent = data.r01.toFixed(3);
+
+      // Pillar Summaries
+      document.getElementById("pillar1Score").textContent = data.m1.toFixed(3);
+      document.getElementById("pillar2Score").textContent = data.indepScore.toFixed(3);
+      document.getElementById("pillar3Score").textContent = data.m6.toFixed(3);
 
       // Render Submetrics
       const renderCard = (id, score, rawText) => {
@@ -818,35 +722,10 @@ Respond ONLY with valid JSON:
 
       renderCard("m1", data.m1, `${data.raw.totalPapers} pubs`);
       renderCard("m2", data.m2, `${data.raw.firstAuthorCount}/${data.raw.totalPapers} 1st`);
-      renderCard("m3", data.m3, `${data.raw.lastAuthorCount}/${data.raw.totalPapers} last`);
-      renderCard("m4", data.m4, `${data.raw.cpy} c/yr`);
-      renderCard("m5", data.m5, null);
-      renderCard("m6", data.m6, null);
-      renderCard("m7", data.m7, null);
-
-      // LLM Justification
-      const justDiv = document.getElementById("llmJustification");
-      if (data.llmData) {
-        justDiv.innerHTML = `
-          <p><strong class="text-white">Overall Capability Appraisal:</strong> ${data.llmData.overall_summary || 'N/A'}</p>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
-            <div class="p-3 bg-slate-900 rounded-lg border border-slate-800">
-              <span class="text-emerald-400 font-semibold block text-[11px] mb-1">M5: Novelty Justification</span>
-              <p class="text-slate-400 text-[11px]">${data.llmData.justification_novelty || 'Evaluated.'}</p>
-            </div>
-            <div class="p-3 bg-slate-900 rounded-lg border border-slate-800">
-              <span class="text-amber-400 font-semibold block text-[11px] mb-1">M6: Societal Impact</span>
-              <p class="text-slate-400 text-[11px]">${data.llmData.justification_societal || 'Evaluated.'}</p>
-            </div>
-            <div class="p-3 bg-slate-900 rounded-lg border border-slate-800">
-              <span class="text-purple-400 font-semibold block text-[11px] mb-1">M7: Technical Rigour</span>
-              <p class="text-slate-400 text-[11px]">${data.llmData.justification_rigor || 'Evaluated.'}</p>
-            </div>
-          </div>
-        `;
-      } else {
-        justDiv.textContent = data.llmJustification || "Evaluated with default baseline.";
-      }
+      renderCard("m3", data.m3, `${data.raw.singleAuthorCount}/${data.raw.totalPapers} solo`);
+      renderCard("m4", data.m4, `${data.raw.lastAuthorCount}/${data.raw.totalPapers} last`);
+      renderCard("m5", data.m5, `${data.raw.avgAuthors} avg team`);
+      renderCard("m6", data.m6, `${data.raw.cpy} c/yr`);
 
       // Articles Table
       const tableBody = document.getElementById("papersTableBody");
@@ -857,10 +736,14 @@ Respond ONLY with valid JSON:
         const row = document.createElement("tr");
         row.className = "hover:bg-slate-800/30 transition";
 
-        let roleBadges = [];
-        if (art.isFirst) roleBadges.push(`<span class="px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-semibold text-[10px]">First</span>`);
-        if (art.isLast) roleBadges.push(`<span class="px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 font-semibold text-[10px]">Last</span>`);
-        if (roleBadges.length === 0) roleBadges.push(`<span class="text-slate-500 text-[10px]">Co-author</span>`);
+        let badge = `<span class="text-slate-500 text-[10px]">Co-author</span>`;
+        if (art.role === "Single Author") {
+          badge = `<span class="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-semibold text-[10px]">Single Author</span>`;
+        } else if (art.role === "First Author") {
+          badge = `<span class="px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-semibold text-[10px]">First Author</span>`;
+        } else if (art.role === "Last Author") {
+          badge = `<span class="px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 font-semibold text-[10px]">Last Author</span>`;
+        }
 
         row.innerHTML = `
           <td class="py-2.5 px-3 font-mono text-slate-400">${art.year}</td>
@@ -868,7 +751,8 @@ Respond ONLY with valid JSON:
             <div class="font-medium text-slate-200 line-clamp-1">${art.title}</div>
             <div class="text-[10px] text-slate-500">${art.venue}</div>
           </td>
-          <td class="py-2.5 px-3 whitespace-nowrap">${roleBadges.join(" ")}</td>
+          <td class="py-2.5 px-3 whitespace-nowrap">${badge}</td>
+          <td class="py-2.5 px-3 text-center font-mono text-slate-400">${art.authorCount}</td>
           <td class="py-2.5 px-3 text-right font-mono text-slate-300">${art.citations}</td>
         `;
         tableBody.appendChild(row);
@@ -938,11 +822,11 @@ Respond ONLY with valid JSON:
           <td class="py-2.5 px-3 text-right">
             <span class="px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-300 font-sans text-[10px] font-semibold">Top ${100 - parseInt(percentile)}%</span>
           </td>
-          <td class="py-2.5 px-3 text-right text-slate-400 text-[11px]">
-            ${Number(item.m1).toFixed(2)} / ${Number(item.m2).toFixed(2)} / ${Number(item.m3).toFixed(2)} / ${Number(item.m4).toFixed(2)}
+          <td class="py-2.5 px-3 text-right text-indigo-300 font-semibold text-[11px]">
+            ${Number(item.indep || 0).toFixed(3)}
           </td>
           <td class="py-2.5 px-3 text-right text-slate-400 text-[11px]">
-            ${Number(item.m5).toFixed(2)} / ${Number(item.m6).toFixed(2)} / ${Number(item.m7).toFixed(2)}
+            ${Number(item.m1).toFixed(2)} / ${Number(item.m6).toFixed(2)}
           </td>
         `;
         tableBody.appendChild(row);
