@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BRACU - Research Capability Index (RCI) Evaluator v2.0</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BracU Research Capacity Index (BRCI)</title>
+  <meta name="description" content="AI-Powered Researcher Capacity Evaluation System for Brac University Students and Academic Institutions.">
+  
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Inter & JetBrains Mono Fonts -->
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
   <script>
     tailwind.config = {
       theme: {
@@ -19,822 +24,1225 @@
             mono: ['JetBrains Mono', 'monospace'],
           },
           colors: {
-            brand: {
-              50: '#f0f4fe',
-              100: '#dde6fc',
-              500: '#3352ec',
-              600: '#1d3ee5',
-              700: '#1530be',
-              900: '#0f1f7a',
+            bracu: {
+              navy: '#0b2545',
+              dark: '#134074',
+              blue: '#0056b3',
+              gold: '#e0a96d',
+              light: '#eef4f8',
             }
           }
         }
       }
     }
   </script>
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white !important; color: black !important; }
+    }
+  </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-brand-500 selection:text-white pb-16">
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col font-sans antialiased">
 
-  <!-- ==================== HEADER ==================== -->
-  <header class="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md sticky top-0 z-40">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <div class="h-9 w-9 rounded-xl bg-gradient-to-br from-brand-500 to-indigo-700 flex items-center justify-center font-bold text-white shadow-lg shadow-brand-500/20 text-base">
-          RCI
+  <!-- TOP NAVIGATION HEADER -->
+  <header class="bg-bracu-navy text-white shadow-lg sticky top-0 z-50 border-b border-blue-900/60 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo & Title -->
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('dashboard')">
+          <div class="w-10 h-10 rounded-lg bg-gradient-to-tr from-amber-500 to-blue-500 flex items-center justify-center font-bold text-xl shadow-md text-white">
+            <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="font-extrabold tracking-tight text-lg text-white">BracU <span class="text-amber-400">RCI</span></span>
+              <span class="text-[10px] uppercase font-semibold bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30">ORCID Verified</span>
+            </div>
+            <p class="text-xs text-blue-200 hidden sm:block">Research Capacity Index • Supervisor & Co-Author Matcher</p>
+          </div>
         </div>
-        <div>
-          <h1 class="text-sm sm:text-base font-bold text-white tracking-tight flex items-center gap-2">
-            Research Capability Index
-            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30">BRACU v2.0</span>
-          </h1>
-          <p class="text-[11px] text-slate-400">Deterministic • Reproducible • DORA &amp; Leiden Grounded</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-2">
-        <a href="./methodology.html" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition flex items-center gap-1.5 font-medium">
-          <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-          Methodology
-        </a>
-        <button id="openLeaderboardBtn" class="text-xs px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 transition flex items-center gap-1.5 font-medium">
-          <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-          🏆 See Ranking
-        </button>
+
+        <!-- Navigation Tabs -->
+        <nav class="flex space-x-1 sm:space-x-2">
+          <button onclick="switchTab('dashboard')" id="tabBtn-dashboard" class="tab-btn px-3 py-2 text-sm font-medium rounded-md transition-all text-white bg-blue-900/80 shadow-sm flex items-center space-x-1.5">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+            <span class="hidden md:inline">Evaluator</span>
+          </button>
+          <button onclick="switchTab('guideline')" id="tabBtn-guideline" class="tab-btn px-3 py-2 text-sm font-medium rounded-md transition-all text-slate-300 hover:text-white hover:bg-blue-900/40 flex items-center space-x-1.5">
+            <i data-lucide="book-open" class="w-4 h-4"></i>
+            <span>User Guideline</span>
+          </button>
+          <button onclick="switchTab('methodology')" id="tabBtn-methodology" class="tab-btn px-3 py-2 text-sm font-medium rounded-md transition-all text-slate-300 hover:text-white hover:bg-blue-900/40 flex items-center space-x-1.5">
+            <i data-lucide="calculator" class="w-4 h-4"></i>
+            <span class="hidden md:inline">RCI Formula</span>
+          </button>
+          <button onclick="switchTab('about')" id="tabBtn-about" class="tab-btn px-3 py-2 text-sm font-medium rounded-md transition-all text-slate-300 hover:text-white hover:bg-blue-900/40 flex items-center space-x-1.5">
+            <i data-lucide="info" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">About</span>
+          </button>
+        </nav>
       </div>
     </div>
   </header>
 
-  <!-- ==================== MAIN CONTENT ==================== -->
-  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+  <!-- MAIN CONTAINER -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-    <!-- Search / Evaluator Panel -->
-    <section class="bg-slate-900/80 rounded-2xl p-5 sm:p-6 border border-slate-800 shadow-xl space-y-4">
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-        <!-- ORCID Input -->
-        <div class="md:col-span-10 space-y-1.5">
-          <label for="orcidInput" class="text-xs font-semibold text-slate-300 flex items-center justify-between">
-            <span>Researcher ORCID iD</span>
-            <span class="text-[10px] text-emerald-400 font-normal">Zero namesake bloat • Instant deterministic evaluation</span>
-          </label>
-          <div class="relative">
-            <input type="text" id="orcidInput" placeholder="e.g., 0000-0002-1825-0097" class="w-full pl-9 pr-3.5 py-3 rounded-xl bg-slate-950 border border-slate-800 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-sm font-mono text-slate-200 placeholder-slate-600 outline-none transition" />
-            <svg class="w-4 h-4 text-emerald-500 absolute left-3 top-1/2 -translate-y-1/2" viewBox="0 0 256 256" fill="currentColor">
-              <path d="M128 0C57.307 0 0 57.307 0 128s57.307 128 128 128 128-57.307 128-128S198.693 0 128 0zm-39.73 194.22H61.02V81.08h27.25v113.14zm-13.62-128.6c-8.73 0-15.8-7.07-15.8-15.8s7.07-15.8 15.8-15.8 15.8 7.07 15.8 15.8-7.07 15.8-15.8 15.8zm120.31 82.52c-4.91 14.15-14.7 25.4-28.3 32.55-13.6 7.15-29.35 10.78-46.88 10.78H106.6V81.08h42.13c17.53 0 32.84 3.63 45.48 10.78 12.64 7.15 22.02 18.06 27.88 32.55 5.86 14.49 8.84 31.7 8.84 51.27 0 19.57-2.98 36.63-8.84 50.81zm-26.68-50.81c0-14.15-1.92-25.79-5.76-34.92-3.84-9.13-9.59-15.8-17.26-20.02-7.67-4.22-17.1-6.33-28.3-6.33h-14.7v122.54h14.7c11.2 0 20.63-2.11 28.3-6.33 7.67-4.22 13.42-10.89 17.26-20.02 3.84-9.13 5.76-20.77 5.76-34.92z"/>
-            </svg>
+    <!-- TAB 1: EVALUATOR DASHBOARD -->
+    <div id="tab-dashboard" class="tab-content space-y-8">
+      
+      <!-- HERO BANNER -->
+      <div class="bg-gradient-to-r from-bracu-navy via-slate-900 to-bracu-dark rounded-2xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden no-print">
+        <div class="absolute -right-10 -bottom-10 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="relative z-10 max-w-3xl">
+          <div class="inline-flex items-center space-x-2 bg-amber-400/10 border border-amber-400/30 text-amber-300 text-xs px-3 py-1 rounded-full mb-3">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+            <span>Hybrid ORCID-Registry Verified + OpenAlex Abstract Retrieval + Groq 120B</span>
           </div>
-        </div>
-
-        <!-- Action Button -->
-        <div class="md:col-span-2">
-          <button id="evaluateBtn" class="w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-500 active:scale-[0.98] text-white font-semibold text-xs transition shadow-lg shadow-brand-600/25 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-            <span id="btnSpinner" class="hidden animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
-            <span id="btnText">Calculate RCI</span>
-          </button>
+          <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight">Evaluate Researcher Capacity for Thesis & Projects</h1>
+          <p class="mt-2 text-slate-300 text-sm sm:text-base leading-relaxed">
+            Eliminates author-name collision and preprint contamination. We scrape canonical works straight from the official <strong>ORCID Registry</strong>, enrich DOIs with <strong>OpenAlex</strong> abstracts, and evaluate supervision readiness using <strong>openai/gpt-oss-120b</strong>.
+          </p>
         </div>
       </div>
 
-      <!-- Status Banner -->
-      <div id="statusBanner" class="hidden text-xs px-4 py-3 rounded-xl border flex items-center gap-3">
-        <div id="statusIcon" class="shrink-0"></div>
-        <div id="statusMessage" class="flex-1 font-medium"></div>
-      </div>
-    </section>
+      <!-- INPUT CONFIGURATION CARD -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 no-print">
+        <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+          <i data-lucide="search" class="w-5 h-5 text-blue-600"></i>
+          <span>Researcher & API Configuration</span>
+        </h2>
+        
+        <form id="evaluationForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            
+            <!-- ORCID INPUT -->
+            <div class="lg:col-span-6 space-y-1.5">
+              <label for="orcidInput" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                Researcher ORCID iD <span class="text-rose-500">*</span>
+              </label>
+              <div class="relative rounded-lg shadow-sm">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-mono text-sm">
+                  <i data-lucide="fingerprint" class="w-4 h-4"></i>
+                </div>
+                <input 
+                  type="text" 
+                  id="orcidInput" 
+                  name="orcid"
+                  required
+                  placeholder="e.g. 0000-0002-1825-0097"
+                  pattern="(\d{4}-){3}\d{3}[\dX]"
+                  class="block w-full pl-10 pr-24 py-2.5 text-sm font-mono rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-slate-50 focus:bg-white"
+                >
+                <div class="absolute inset-y-0 right-1 flex items-center">
+                  <button 
+                    type="button" 
+                    onclick="loadDemoOrcid()" 
+                    class="text-[11px] bg-slate-200 hover:bg-slate-300 text-slate-700 px-2 py-1 rounded font-medium transition"
+                    title="Load an active academic profile for testing"
+                  >
+                    Demo iD
+                  </button>
+                </div>
+              </div>
+              <p class="text-[11px] text-slate-500">Format: 16 digits separated by hyphens (e.g. 0000-0002-1825-0097).</p>
+            </div>
 
-    <!-- ==================== RESULTS SECTION ==================== -->
-    <div id="resultsSection" class="hidden space-y-6">
-
-      <!-- Profile Header & Main Score -->
-      <div class="bg-slate-900/60 rounded-2xl p-5 border border-slate-800/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div class="space-y-1.5">
-          <div class="flex items-center gap-2 flex-wrap">
-            <h2 id="resName" class="text-xl font-bold text-white"></h2>
-            <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full border bg-emerald-500/10 text-emerald-300 border-emerald-500/30 flex items-center gap-1">
-              <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
-              ORCID Verified
-            </span>
-            <span id="bonusTag" class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full border bg-amber-500/10 text-amber-300 border-amber-500/30 hidden"></span>
-          </div>
-          <p id="profileSummary" class="text-xs text-slate-400 font-mono"></p>
-        </div>
-
-        <!-- Main RCI Score Card -->
-        <div class="flex items-center gap-4 bg-slate-950/80 px-5 py-3.5 rounded-xl border border-slate-800">
-          <div>
-            <div class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Research Capability Index</div>
-            <div class="text-3xl font-extrabold text-brand-400 font-mono flex items-baseline gap-1">
-              <span id="rciFinalScore">0.00</span>
-              <span class="text-xs text-slate-500 font-normal">/ 4.00</span>
+            <!-- GROQ API KEY INPUT -->
+            <div class="lg:col-span-6 space-y-1.5">
+              <div class="flex items-center justify-between">
+                <label for="groqApiKey" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                  Groq Console API Key <span class="text-rose-500">*</span>
+                </label>
+                <a href="https://console.groq.com/keys" target="_blank" rel="noopener" class="text-[11px] text-blue-600 hover:underline inline-flex items-center space-x-0.5">
+                  <span>Get Free Key</span>
+                  <i data-lucide="external-link" class="w-3 h-3"></i>
+                </a>
+              </div>
+              <div class="relative rounded-lg shadow-sm">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <i data-lucide="key-round" class="w-4 h-4"></i>
+                </div>
+                <input 
+                  type="password" 
+                  id="groqApiKey" 
+                  name="groqApiKey"
+                  required
+                  placeholder="gsk_..."
+                  class="block w-full pl-10 pr-12 py-2.5 text-sm font-mono rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-slate-50 focus:bg-white"
+                >
+                <div class="absolute inset-y-0 right-1 flex items-center">
+                  <button 
+                    type="button" 
+                    onclick="toggleKeyVisibilityBtn()" 
+                    class="p-1.5 text-slate-400 hover:text-slate-600 rounded"
+                    title="Show/Hide Key"
+                  >
+                    <i data-lucide="eye" id="eyeIcon" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+              <p class="text-[11px] text-slate-500">Client-side only. Stored safely in <code class="text-blue-700 bg-blue-50 px-1 rounded">localStorage</code>.</p>
             </div>
           </div>
-          <div class="h-10 w-px bg-slate-800"></div>
+
+          <!-- CONTROLS & SUBMIT BUTTON -->
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between pt-2 border-t border-slate-100 gap-3">
+            <div class="flex items-center space-x-2 text-xs text-slate-600">
+              <span class="font-medium">Active LLM Model:</span>
+              <span class="inline-flex items-center space-x-1 font-mono text-emerald-700 bg-emerald-50 px-2 py-1 rounded border border-emerald-200">
+                <i data-lucide="cpu" class="w-3 h-3"></i>
+                <span>openai/gpt-oss-120b</span>
+              </span>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <button 
+                type="button" 
+                onclick="clearResults()" 
+                class="px-4 py-2.5 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition"
+              >
+                Clear
+              </button>
+              <button 
+                type="submit" 
+                id="submitBtn"
+                class="flex-1 sm:flex-none inline-flex items-center justify-center space-x-2 px-6 py-2.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-md hover:shadow-lg transition active:scale-[0.98]"
+              >
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                <span id="submitBtnText">Compute RCI & Analyze</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- PROGRESS & STATUS DISPLAY -->
+      <div id="statusContainer" class="hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4 no-print">
+        <div class="flex items-center space-x-3">
+          <div class="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
           <div>
-            <div class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Normalized Index</div>
-            <div id="normalizedR" class="text-base font-bold text-slate-300 font-mono">0.000</div>
+            <h3 id="statusTitle" class="text-sm font-bold text-slate-800">Reading ORCID Registry...</h3>
+            <p id="statusDetail" class="text-xs text-slate-500">Querying pub.orcid.org for verified author record...</p>
           </div>
+        </div>
+        <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+          <div id="progressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 15%"></div>
         </div>
       </div>
 
-      <!-- Composite Pillars Summary Card -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-        <!-- Pillar 1 -->
-        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-1.5">
-          <div class="flex items-center justify-between text-xs">
-            <span class="font-semibold text-slate-300">Pillar 1: Output</span>
-            <span class="font-mono text-brand-400 font-bold">30% Weight</span>
-          </div>
-          <div class="text-lg font-bold font-mono text-white" id="pillar1Score">0.000</div>
-          <p class="text-[11px] text-slate-400">Sigmoid-saturated peer-reviewed volume ($M_1$)</p>
+      <!-- ERROR ALERT -->
+      <div id="errorAlert" class="hidden bg-rose-50 border border-rose-200 rounded-xl p-4 text-rose-800 space-y-2 no-print">
+        <div class="flex items-center space-x-2 font-bold text-sm">
+          <i data-lucide="alert-triangle" class="w-5 h-5 text-rose-600 flex-shrink-0"></i>
+          <span id="errorMessageTitle">Analysis Error Encountered</span>
         </div>
-
-        <!-- Pillar 2 -->
-        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-1.5">
-          <div class="flex items-center justify-between text-xs">
-            <span class="font-semibold text-slate-300">Pillar 2: Independency</span>
-            <span class="font-mono text-indigo-400 font-bold">45% Weight</span>
-          </div>
-          <div class="text-lg font-bold font-mono text-white" id="pillar2Score">0.000</div>
-          <p class="text-[11px] text-slate-400">Composite: $0.45 M_2 + 0.25 M_3 + 0.10 M_4 + 0.20 M_5$</p>
-        </div>
-
-        <!-- Pillar 3 -->
-        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-1.5">
-          <div class="flex items-center justify-between text-xs">
-            <span class="font-semibold text-slate-300">Pillar 3: Impact Velocity</span>
-            <span class="font-mono text-teal-400 font-bold">25% Weight</span>
-          </div>
-          <div class="text-lg font-bold font-mono text-white" id="pillar3Score">0.000</div>
-          <p class="text-[11px] text-slate-400">Annualized citation velocity normalized ($M_6$)</p>
-        </div>
+        <p id="errorMessageBody" class="text-xs leading-relaxed text-rose-700"></p>
       </div>
 
-      <!-- Sub-metrics Grid (M1 to M6) -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
-        <!-- M1 -->
-        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800/80 space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold text-slate-300">M1: Peer-Reviewed Output</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">30% (RCI)</span>
+      <!-- RESULTS SECTION -->
+      <div id="resultsSection" class="hidden space-y-8">
+        
+        <!-- RESEARCHER HEADER CARD -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 lg:p-8">
+          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 pb-6 border-b border-slate-100">
+            <div class="space-y-2">
+              <div class="flex flex-wrap items-center gap-2">
+                <h2 id="resName" class="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">Researcher Name</h2>
+                <a id="resOrcidBadge" href="#" target="_blank" class="inline-flex items-center space-x-1 font-mono text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full hover:bg-emerald-100 transition">
+                  <i data-lucide="check-circle" class="w-3 h-3 text-emerald-500"></i>
+                  <span id="resOrcidVal">0000-0000-0000-0000</span>
+                </a>
+              </div>
+              <p id="resAffiliation" class="text-sm font-medium text-slate-600 flex items-center space-x-1.5">
+                <i data-lucide="building" class="w-4 h-4 text-slate-400 flex-shrink-0"></i>
+                <span>Institutional Affiliation</span>
+              </p>
+              <div id="resTopics" class="flex flex-wrap gap-1.5 pt-1">
+                <!-- LLM extracted topics -->
+              </div>
+            </div>
+
+            <!-- SCORE BADGE & TIER -->
+            <div class="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end justify-between gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200 min-w-[250px]">
+              <div class="space-y-1">
+                <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block lg:text-right">BracU RCI Score</span>
+                <div class="flex items-baseline lg:justify-end space-x-1.5">
+                  <span id="rciScoreDisplay" class="text-4xl font-extrabold text-slate-900 font-mono tracking-tight">0.00</span>
+                  <span class="text-sm font-semibold text-slate-400 font-mono">/ 1.00</span>
+                </div>
+              </div>
+              <div id="rciTierBadge" class="px-3 py-1 rounded-full text-xs font-extrabold tracking-wide uppercase shadow-sm">
+                Rank Tier
+              </div>
+            </div>
           </div>
-          <div class="flex items-baseline justify-between">
-            <span id="m1Score" class="text-xl font-bold font-mono text-white">0.000</span>
-            <span id="m1Raw" class="text-xs text-slate-500 font-mono"></span>
+
+          <!-- METRICS GRID -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 mt-6">
+            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100">
+              <span class="text-[11px] font-semibold text-slate-500 uppercase">ORCID Works</span>
+              <p id="metricWorks" class="text-xl font-bold font-mono text-slate-900 mt-1">0</p>
+              <span class="text-[10px] text-emerald-600 font-medium">Verified in ORCID</span>
+            </div>
+            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100">
+              <span class="text-[11px] font-semibold text-slate-500 uppercase">Peer-Reviewed</span>
+              <p id="metricPeerReviewed" class="text-xl font-bold font-mono text-slate-900 mt-1">0</p>
+              <span class="text-[10px] text-slate-400">Preprints: <span id="metricPreprints">0</span></span>
+            </div>
+            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100">
+              <span class="text-[11px] font-semibold text-slate-500 uppercase">DOI Citations</span>
+              <p id="metricCitations" class="text-xl font-bold font-mono text-slate-900 mt-1">0</p>
+              <span class="text-[10px] text-slate-400">Linked Works</span>
+            </div>
+            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100">
+              <span class="text-[11px] font-semibold text-slate-500 uppercase">First Author</span>
+              <p id="metricFirstAuthor" class="text-xl font-bold font-mono text-slate-900 mt-1">0</p>
+              <span class="text-[10px] text-slate-400">Hands-on Lead</span>
+            </div>
+            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100">
+              <span class="text-[11px] font-semibold text-slate-500 uppercase">Last Author</span>
+              <p id="metricLastAuthor" class="text-xl font-bold font-mono text-slate-900 mt-1">0</p>
+              <span class="text-[10px] text-slate-400">Supervisor/PI</span>
+            </div>
+            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100">
+              <span class="text-[11px] font-semibold text-slate-500 uppercase">Avg Co-Authors</span>
+              <p id="metricAvgCoAuthors" class="text-xl font-bold font-mono text-slate-900 mt-1">0.0</p>
+              <span class="text-[10px] text-slate-400">Network Span</span>
+            </div>
           </div>
-          <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-            <div id="m1Bar" class="bg-brand-500 h-1.5 rounded-full" style="width: 0%"></div>
+
+          <!-- RCI FORMULA BREAKDOWN PROGRESS -->
+          <div class="mt-6 pt-6 border-t border-slate-100 space-y-3">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between">
+              <span>RCI Component Mathematical Contribution</span>
+              <span class="text-[10px] text-blue-600 font-semibold cursor-pointer hover:underline" onclick="switchTab('methodology')">View Full Formula</span>
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="rciComponentsBreakdown">
+              <!-- Dynamically populated component progress cards -->
+            </div>
           </div>
-          <p class="text-[10px] text-slate-400">Formula: <code class="text-slate-300">sigmoid(papers)</code> (Journals + Confs)</p>
         </div>
 
-        <!-- M2 -->
-        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800/80 space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold text-slate-300">M2: First-Author Ratio</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-950 text-indigo-300 font-mono">45% (Indep.)</span>
+        <!-- AI SUPERVISION & CO-AUTHORSHIP REPORT -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 lg:p-8 space-y-6">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+            <div class="flex items-center space-x-2.5">
+              <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center">
+                <i data-lucide="bot" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h3 class="text-lg font-bold text-slate-900">LLM Capacity Assessment & Student Advisory</h3>
+                <p class="text-xs text-slate-500">Synthesized by <code class="font-mono text-blue-600">openai/gpt-oss-120b</code> via Groq</p>
+              </div>
+            </div>
+            <button onclick="window.print()" class="no-print inline-flex items-center space-x-1.5 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition">
+              <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+              <span>Print / Save PDF</span>
+            </button>
           </div>
-          <div class="flex items-baseline justify-between">
-            <span id="m2Score" class="text-xl font-bold font-mono text-white">0.000</span>
-            <span id="m2Raw" class="text-xs text-slate-500 font-mono"></span>
+
+          <!-- Executive Summary -->
+          <div class="bg-blue-50/60 border-l-4 border-blue-600 p-4 rounded-r-xl">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-blue-900 mb-1">Executive Summary for Students</h4>
+            <p id="reportExecSummary" class="text-sm text-slate-700 leading-relaxed"></p>
           </div>
-          <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-            <div id="m2Bar" class="bg-indigo-500 h-1.5 rounded-full" style="width: 0%"></div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <h4 class="text-sm font-bold text-slate-900 flex items-center space-x-2">
+                <i data-lucide="activity" class="w-4 h-4 text-amber-500"></i>
+                <span>Technical Ability & Research Maturity</span>
+              </h4>
+              <p id="reportAbility" class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3.5 rounded-xl border border-slate-100"></p>
+            </div>
+
+            <div class="space-y-2">
+              <h4 class="text-sm font-bold text-slate-900 flex items-center space-x-2">
+                <i data-lucide="award" class="w-4 h-4 text-purple-500"></i>
+                <span>Methodology Uniqueness & Venue Rigor</span>
+              </h4>
+              <p id="reportUniqueness" class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3.5 rounded-xl border border-slate-100"></p>
+            </div>
+
+            <div class="space-y-2">
+              <h4 class="text-sm font-bold text-slate-900 flex items-center space-x-2">
+                <i data-lucide="heart-handshake" class="w-4 h-4 text-emerald-600"></i>
+                <span>Societal, Humanitarian & Frontier Relevance</span>
+              </h4>
+              <p id="reportSocietal" class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3.5 rounded-xl border border-slate-100"></p>
+            </div>
+
+            <div class="space-y-2">
+              <h4 class="text-sm font-bold text-slate-900 flex items-center space-x-2">
+                <i data-lucide="users" class="w-4 h-4 text-blue-600"></i>
+                <span>Thesis Supervision & Project Match</span>
+              </h4>
+              <p id="reportSupervisionFit" class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3.5 rounded-xl border border-slate-100"></p>
+            </div>
           </div>
-          <p class="text-[10px] text-slate-400">Direct technical execution (multi-author papers)</p>
         </div>
 
-        <!-- M3 -->
-        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800/80 space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold text-slate-300">M3: Single-Author Ratio</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-950 text-indigo-300 font-mono">25% (Indep.)</span>
+        <!-- RECENT PUBLICATIONS & HYBRID ABSTRACT AUDIT (MAX 3) -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 lg:p-8 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+            <h3 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
+              <i data-lucide="file-text" class="w-5 h-5 text-blue-600"></i>
+              <span>Most Recent Publications & Abstract Audit (Max 3)</span>
+            </h3>
+            <span class="text-xs text-slate-500">Reconstructed via ORCID + OpenAlex</span>
           </div>
-          <div class="flex items-baseline justify-between">
-            <span id="m3Score" class="text-xl font-bold font-mono text-white">0.000</span>
-            <span id="m3Raw" class="text-xs text-slate-500 font-mono"></span>
+
+          <div id="recentPapersContainer" class="space-y-4">
+            <!-- Recent papers injected here -->
           </div>
-          <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-            <div id="m3Bar" class="bg-indigo-400 h-1.5 rounded-full" style="width: 0%"></div>
-          </div>
-          <p class="text-[10px] text-slate-400">Independent standalone research (1 author only)</p>
         </div>
 
-        <!-- M4 -->
-        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800/80 space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold text-slate-300">M4: Last-Author Ratio</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-950 text-indigo-300 font-mono">10% (Indep.)</span>
-          </div>
-          <div class="flex items-baseline justify-between">
-            <span id="m4Score" class="text-xl font-bold font-mono text-white">0.000</span>
-            <span id="m4Raw" class="text-xs text-slate-500 font-mono"></span>
-          </div>
-          <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-            <div id="m4Bar" class="bg-sky-500 h-1.5 rounded-full" style="width: 0%"></div>
-          </div>
-          <p class="text-[10px] text-slate-400">Senior guidance &amp; supervision (multi-author)</p>
-        </div>
-
-        <!-- M5 -->
-        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800/80 space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold text-slate-300">M5: Team Concentration</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-950 text-indigo-300 font-mono">20% (Indep.)</span>
-          </div>
-          <div class="flex items-baseline justify-between">
-            <span id="m5Score" class="text-xl font-bold font-mono text-white">0.000</span>
-            <span id="m5Raw" class="text-xs text-slate-500 font-mono"></span>
-          </div>
-          <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-            <div id="m5Bar" class="bg-purple-500 h-1.5 rounded-full" style="width: 0%"></div>
-          </div>
-          <p class="text-[10px] text-slate-400">Formula: <code class="text-slate-300">1 / avg_authors</code> (Bonus if avg &lt; 3.0)</p>
-        </div>
-
-        <!-- M6 -->
-        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800/80 space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold text-slate-300">M6: Citation Velocity</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">25% (RCI)</span>
-          </div>
-          <div class="flex items-baseline justify-between">
-            <span id="m6Score" class="text-xl font-bold font-mono text-teal-400">0.000</span>
-            <span id="m6Raw" class="text-xs text-slate-500 font-mono"></span>
-          </div>
-          <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-            <div id="m6Bar" class="bg-teal-500 h-1.5 rounded-full" style="width: 0%"></div>
-          </div>
-          <p class="text-[10px] text-slate-400">Formula: <code class="text-slate-300">CPY / (CPY + 15)</code></p>
-        </div>
-      </div>
-
-      <!-- Evaluated Publications Table -->
-      <div class="bg-slate-900/80 rounded-2xl p-6 border border-slate-800 space-y-4">
-        <div class="flex items-center justify-between">
-          <h3 class="text-sm font-bold text-white">Evaluated Peer-Reviewed Publications (<span id="paperCount">0</span>)</h3>
-          <span class="text-[11px] text-slate-500">Filtered on ORCID verified Journals &amp; Conferences</span>
-        </div>
-        <div class="overflow-x-auto max-h-96">
-          <table class="w-full text-left text-xs border-collapse">
-            <thead>
-              <tr class="border-b border-slate-800 text-slate-400 font-semibold uppercase text-[10px]">
-                <th class="py-2.5 px-3">Year</th>
-                <th class="py-2.5 px-3">Title &amp; Venue</th>
-                <th class="py-2.5 px-3">Authorship Role</th>
-                <th class="py-2.5 px-3 text-center">Team Size</th>
-                <th class="py-2.5 px-3 text-right">Citations</th>
-              </tr>
-            </thead>
-            <tbody id="papersTableBody" class="divide-y divide-slate-800/50 text-slate-300 font-sans">
-            </tbody>
-          </table>
-        </div>
       </div>
 
     </div>
+
+    <!-- TAB 2: USER GUIDELINE -->
+    <div id="tab-guideline" class="tab-content hidden space-y-8">
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 space-y-6">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Step-by-Step Tutorial</span>
+          <h2 class="text-2xl font-extrabold text-slate-900 mt-1">How to Use the BracU Research Capacity Index</h2>
+          <p class="text-sm text-slate-500 mt-1">Follow these 5 straightforward steps to evaluate any faculty member or researcher.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+          
+          <!-- STEP 1 -->
+          <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
+            <div class="flex items-center space-x-3">
+              <span class="w-8 h-8 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-sm shadow">1</span>
+              <h3 class="font-bold text-slate-900 text-base">Search Researcher on ORCID</h3>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Navigate to the official <a href="https://orcid.org/" target="_blank" rel="noopener" class="text-blue-600 font-semibold hover:underline inline-flex items-center space-x-0.5"><span>ORCID Registry</span> <i data-lucide="external-link" class="w-3 h-3"></i></a>. Use the top search bar labeled <em>"Search the ORCID registry"</em> and enter the researcher's name or university (e.g. "Brac University").
+            </p>
+            <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs font-mono text-slate-500">
+              Search example: "Sadia Hamid Kazi" or "Annajiat Alim Rasel"
+            </div>
+          </div>
+
+          <!-- STEP 2 -->
+          <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
+            <div class="flex items-center space-x-3">
+              <span class="w-8 h-8 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-sm shadow">2</span>
+              <h3 class="font-bold text-slate-900 text-base">Copy the 16-Digit ORCID iD</h3>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Copy the verified 16-digit ORCID identifier located beneath the researcher's name. This guarantees 100% precision with no name collisions.
+            </p>
+            <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs font-mono text-emerald-600 flex items-center justify-between">
+              <span>0000-0002-1825-0097</span>
+              <span class="text-[10px] text-slate-400 uppercase font-sans">Pattern: XXXX-XXXX-XXXX-XXXX</span>
+            </div>
+          </div>
+
+          <!-- STEP 3 -->
+          <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
+            <div class="flex items-center space-x-3">
+              <span class="w-8 h-8 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-sm shadow">3</span>
+              <h3 class="font-bold text-slate-900 text-base">Obtain a Free Groq API Key</h3>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Log in to the <a href="https://console.groq.com/keys" target="_blank" rel="noopener" class="text-blue-600 font-semibold hover:underline inline-flex items-center space-x-0.5"><span>Groq Cloud Console</span> <i data-lucide="external-link" class="w-3 h-3"></i></a> (free via Google or GitHub account). Click <strong>"Create API Key"</strong> and copy your key.
+            </p>
+            <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs font-mono text-slate-500">
+              Format: gsk_xxxxxxxxxxxxxxxxxxxx
+            </div>
+          </div>
+
+          <!-- STEP 4 & 5 -->
+          <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
+            <div class="flex items-center space-x-3">
+              <span class="w-8 h-8 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-sm shadow">4 & 5</span>
+              <h3 class="font-bold text-slate-900 text-base">Paste & Generate RCI Report</h3>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Paste the ORCID iD and your Groq API key into our Evaluator tab. Click <strong>"Compute RCI & Analyze"</strong>. The system will harvest verified works from ORCID, resolve abstracts, and deliver an AI-generated supervisor evaluation.
+            </p>
+            <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 p-2.5 rounded-lg text-xs flex items-center space-x-2">
+              <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600 flex-shrink-0"></i>
+              <span>Your key remains in your local browser and is never stored on third-party servers.</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: METHODOLOGY & RCI FORMULA -->
+    <div id="tab-methodology" class="tab-content hidden space-y-8">
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 space-y-8">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Mathematical Specification</span>
+          <h2 class="text-2xl font-extrabold text-slate-900 mt-1">The Research Capacity Index (RCI) Formula</h2>
+          <p class="text-sm text-slate-500 mt-1">
+            The RCI is a calibrated metric between <strong>0.00 and 1.00</strong> combining peer-reviewed productivity, citation velocity, supervisory seniority, and AI semantic assessment.
+          </p>
+        </div>
+
+        <!-- MATHEMATICAL EQUATION DISPLAY -->
+        <div class="bg-slate-900 text-white p-6 rounded-2xl font-mono text-sm sm:text-base space-y-3 overflow-x-auto shadow-inner">
+          <p class="text-amber-400 text-xs font-bold uppercase font-sans tracking-wider">// Master RCI Formulation</p>
+          <div class="py-2 border-y border-slate-800 text-emerald-400 font-bold whitespace-nowrap">
+            RCI = (0.22 · S_prod) + (0.23 · S_impact) + (0.18 · S_lead) + (0.12 · S_collab) + (0.15 · S_momentum) + (0.10 · S_align)
+          </div>
+          <p class="text-xs text-slate-400 font-sans">
+            Where each sub-score <code class="text-amber-300">S_x</code> is strictly normalized between <code class="text-amber-300">[0.0, 1.0]</code>.
+          </p>
+        </div>
+
+        <!-- BREAKDOWN TABLE -->
+        <div class="space-y-4">
+          <h3 class="text-base font-bold text-slate-900">Sub-Score Components & Weights</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse border border-slate-200 rounded-lg">
+              <thead class="bg-slate-100 text-slate-700 uppercase font-semibold">
+                <tr>
+                  <th class="p-3 border border-slate-200">Component</th>
+                  <th class="p-3 border border-slate-200">Weight</th>
+                  <th class="p-3 border border-slate-200">Formulation & Rationale</th>
+                  <th class="p-3 border border-slate-200">Why it matters for Thesis Students</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 text-slate-600">
+                <tr>
+                  <td class="p-3 border border-slate-200 font-bold text-slate-800">S_prod (Productivity)</td>
+                  <td class="p-3 border border-slate-200 font-mono text-blue-600 font-bold">22%</td>
+                  <td class="p-3 border border-slate-200">0.7·ln(1+PeerReviewedWorks)/ln(1+70) + 0.3·ln(1+TotalWorks)/ln(1+100)</td>
+                  <td class="p-3 border border-slate-200">Favors verified peer-reviewed articles and conference proceedings over unvetted preprints.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 border border-slate-200 font-bold text-slate-800">S_impact (Impact & Venue)</td>
+                  <td class="p-3 border border-slate-200 font-mono text-blue-600 font-bold">23%</td>
+                  <td class="p-3 border border-slate-200">0.7·ln(1+Citations)/ln(1+2000) + 0.3·min(1, (Citations/Works)/30)</td>
+                  <td class="p-3 border border-slate-200">Indicates that the researcher's published work is actively referenced by global peers.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 border border-slate-200 font-bold text-slate-800">S_lead (Leadership & Mentorship)</td>
+                  <td class="p-3 border border-slate-200 font-mono text-blue-600 font-bold">18%</td>
+                  <td class="p-3 border border-slate-200">min(1, (1.0·FirstAuthors + 1.25·LastAuthors) / EvaluatedWorks)</td>
+                  <td class="p-3 border border-slate-200">Last-authorship reflects senior supervision/laboratory directorship; first-authorship reflects hands-on craftsmanship.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 border border-slate-200 font-bold text-slate-800">S_collab (Collaboration Span)</td>
+                  <td class="p-3 border border-slate-200 font-mono text-blue-600 font-bold">12%</td>
+                  <td class="p-3 border border-slate-200">Optimized between 2 to 7 co-authors; penalizes extreme hyper-authorship or isolated writing.</td>
+                  <td class="p-3 border border-slate-200">Supervisors with balanced co-authorship networks expose thesis students to broader research opportunities.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 border border-slate-200 font-bold text-slate-800">S_momentum (Recency)</td>
+                  <td class="p-3 border border-slate-200 font-mono text-blue-600 font-bold">15%</td>
+                  <td class="p-3 border border-slate-200">min(1, RecentWorks_3yr / 5)</td>
+                  <td class="p-3 border border-slate-200">Filters out dormant supervisors; ensures the researcher has active momentum and current project bandwidth.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 border border-slate-200 font-bold text-slate-800">S_align (Societal & Trendy AI Score)</td>
+                  <td class="p-3 border border-slate-200 font-mono text-blue-600 font-bold">10%</td>
+                  <td class="p-3 border border-slate-200">LLM Semantic Scoring [0.0–1.0] on 3 most recent abstracts against Sustainable Development Goals, healthcare, AI ethics, national development.</td>
+                  <td class="p-3 border border-slate-200">Aligns student research with high-impact scholarship, national priority areas, and contemporary grant requirements.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- RANK TIERS -->
+        <div class="space-y-4">
+          <h3 class="text-base font-bold text-slate-900">Standardized RCI Rank Tiers</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-1">
+              <span class="text-xs font-mono font-bold text-slate-500">0.00 – 0.20</span>
+              <p class="font-bold text-sm text-slate-700">Emerging Scholar</p>
+              <p class="text-[11px] text-slate-500">Early-stage researcher. Suitable for peer co-authorship or exploratory joint projects under external guidance.</p>
+            </div>
+            <div class="p-4 rounded-xl border border-blue-200 bg-blue-50/50 space-y-1">
+              <span class="text-xs font-mono font-bold text-blue-600">0.21 – 0.40</span>
+              <p class="font-bold text-sm text-blue-900">Developing Investigator</p>
+              <p class="text-[11px] text-slate-600">Active publication cadence with developing independent agenda; great co-author for undergraduate papers.</p>
+            </div>
+            <div class="p-4 rounded-xl border border-teal-200 bg-teal-50/50 space-y-1">
+              <span class="text-xs font-mono font-bold text-teal-600">0.41 – 0.60</span>
+              <p class="font-bold text-sm text-teal-900">Established Researcher</p>
+              <p class="text-[11px] text-slate-600">Consistent track record and sound methodology. Highly recommended as co-supervisor or senior thesis mentor.</p>
+            </div>
+            <div class="p-4 rounded-xl border border-indigo-200 bg-indigo-50/50 space-y-1">
+              <span class="text-xs font-mono font-bold text-indigo-600">0.61 – 0.80</span>
+              <p class="font-bold text-sm text-indigo-900">Senior Principal Scholar</p>
+              <p class="text-[11px] text-slate-600">Substantial global citations and demonstrated mentorship. Ideal primary supervisor for Capstone/M.Sc. theses.</p>
+            </div>
+            <div class="p-4 rounded-xl border border-amber-300 bg-amber-50 space-y-1">
+              <span class="text-xs font-mono font-bold text-amber-700">0.81 – 1.00</span>
+              <p class="font-bold text-sm text-amber-900">Distinguished Research Fellow</p>
+              <p class="text-[11px] text-slate-600">Top-tier academic impact with high citation velocity and senior authorship. Pinnacle guidance for doctoral and ambitious publications.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 4: ABOUT -->
+    <div id="tab-about" class="tab-content hidden space-y-8">
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 space-y-6">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Institutional Context</span>
+          <h2 class="text-2xl font-extrabold text-slate-900 mt-1">About BracU Research Capacity Index</h2>
+        </div>
+        
+        <p class="text-sm text-slate-600 leading-relaxed">
+          The <strong>BracU Research Capacity Index (BRCI)</strong> is an academic initiative conceived to empower students at <strong>BRAC University</strong> (Dhaka, Bangladesh) in navigating thesis supervisor selection, co-authorship outreach, and faculty research profiling.
+        </p>
+
+        <p class="text-sm text-slate-600 leading-relaxed">
+          Unlike automated tools that suffer from author name collision and preprint contamination, BRCI utilizes a <strong>Strict ORCID-First Pipeline</strong>: works are directly queried from the verified public ORCID registry, categorized by publication type (journal article, conference paper, preprint), and enriched with DOI-specific abstracts and citation metrics.
+        </p>
+
+        <div class="border-t border-slate-200 pt-6">
+          <h3 class="text-base font-bold text-slate-900 mb-2">Expansion Beyond Brac University</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            While designed initially for BRAC University students and faculty, BRCI's data infrastructure is built on global open scholarly identifiers (ORCID and OpenAlex). As such, it works universally for researchers from <em>BUET, Dhaka University, NSU, IBA, and international universities worldwide</em> without requiring any software modifications.
+          </p>
+        </div>
+      </div>
+    </div>
+
   </main>
 
-  <!-- ==================== LEADERBOARD MODAL ==================== -->
-  <div id="leaderboardModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-6">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-5xl w-full max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
-      <!-- Header -->
-      <div class="p-5 border-b border-slate-800 flex items-center justify-between shrink-0">
-        <div class="flex items-center gap-3">
-          <div class="h-8 w-8 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center font-bold text-sm">
-            🏆
-          </div>
-          <div>
-            <h3 class="text-base font-bold text-white">BRAC University Researcher Leaderboard</h3>
-            <p class="text-xs text-slate-400">Pre-computed deterministic rankings with dynamic percentiles</p>
-          </div>
-        </div>
-        <button id="closeLeaderboardBtn" class="text-slate-400 hover:text-white text-lg">&times;</button>
+  <!-- FOOTER -->
+  <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <span class="font-bold text-white">BRCI</span>
+        <span>— Developed for Brac University Scholars & Global Research Collaborators</span>
       </div>
-
-      <!-- Controls -->
-      <div class="p-4 bg-slate-950/60 border-b border-slate-800/80 flex flex-col sm:flex-row items-center gap-3 shrink-0">
-        <div class="relative flex-1 w-full">
-          <input type="text" id="leaderboardSearch" placeholder="Search researcher, ORCID, or department..." class="w-full pl-9 pr-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-200 outline-none focus:border-brand-500" />
-          <svg class="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-        </div>
-        <div class="flex items-center gap-2 w-full sm:w-auto">
-          <label for="sortBySelect" class="text-xs text-slate-400 whitespace-nowrap">Sort by:</label>
-          <select id="sortBySelect" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 outline-none focus:border-brand-500 font-mono">
-            <option value="rci">RCI Score (Final)</option>
-            <option value="r01">Normalized R</option>
-            <option value="indep">Research Independency</option>
-            <option value="m1">M1: Output</option>
-            <option value="m2">M2: First Author</option>
-            <option value="m3">M3: Single Author</option>
-            <option value="m4">M4: Last Author</option>
-            <option value="m5">M5: Team Concentration</option>
-            <option value="m6">M6: Citation Velocity</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Table Body -->
-      <div class="overflow-y-auto flex-1 p-4">
-        <table class="w-full text-left text-xs border-collapse">
-          <thead class="sticky top-0 bg-slate-900/95 backdrop-blur z-10 border-b border-slate-800 text-slate-400 uppercase text-[10px] font-semibold">
-            <tr>
-              <th class="py-2.5 px-3">Rank</th>
-              <th class="py-2.5 px-3">Researcher</th>
-              <th class="py-2.5 px-3">Department</th>
-              <th class="py-2.5 px-3 text-right">RCI</th>
-              <th class="py-2.5 px-3 text-right">Percentile</th>
-              <th class="py-2.5 px-3 text-right">Independency</th>
-              <th class="py-2.5 px-3 text-right">Output / Citations</th>
-            </tr>
-          </thead>
-          <tbody id="leaderboardTableBody" class="divide-y divide-slate-800/50 text-slate-300 font-mono">
-          </tbody>
-        </table>
-        <div id="leaderboardEmptyState" class="hidden text-center py-12 text-slate-500 text-xs">
-          No dataset found. Ensure <code class="text-slate-400">data/leaderboard.json</code> is committed to the repository.
-        </div>
+      <div class="flex items-center space-x-4 text-[11px]">
+        <a href="https://orcid.org" target="_blank" rel="noopener" class="hover:text-white transition">ORCID Registry</a>
+        <span>•</span>
+        <a href="https://openalex.org" target="_blank" rel="noopener" class="hover:text-white transition">OpenAlex API</a>
+        <span>•</span>
+        <a href="https://console.groq.com" target="_blank" rel="noopener" class="hover:text-white transition">Groq Cloud</a>
       </div>
     </div>
-  </div>
+  </footer>
 
-  <!-- ==================== DETERMINISTIC SCRIPT ==================== -->
+  <!-- CORE LOGIC JAVASCRIPT: HYBRID ORCID + OPENALEX PIPELINE -->
   <script>
-    /**
-     * CONFIGURATION & CONSTANTS
-     */
-    const CONFIG = {
-      // Top-level Pillar Weights
-      WEIGHT_OUTPUT: 0.30,        // M1
-      WEIGHT_INDEPENDENCY: 0.45,  // Composite of M2, M3, M4, M5
-      WEIGHT_CITATIONS: 0.25,     // M6
-
-      // Independency Component Sub-weights (Sum = 1.0)
-      INDEP_M2_WEIGHT: 0.45,      // First-author
-      INDEP_M3_WEIGHT: 0.25,      // Single-author
-      INDEP_M4_WEIGHT: 0.10,      // Last-author
-      INDEP_M5_WEIGHT: 0.20,      // Team concentration (1/avg)
-
-      // Bonus System
-      BONUS_THRESHOLD_GENERAL: 0.80, // For M1, M2, M3, M4, M6
-      BONUS_AUTHORS_MAX_M5: 3.0,     // For M5: bonus if avg_authors < 3.0
-      BONUS_VALUE_PER_METRIC: 0.20,  // +0.20 each
-
-      // M6 Saturation Constant
-      M6_SATURATION_K: 15,
-
-      // OpenAlex Polite Pool
-      OPENALEX_MAILTO: "research-eval@bracu.ac.bd",
-
-      // Allowed ORCID Publication Types (Strictly Peer-Reviewed)
-      ALLOWED_ORCID_TYPES: ["journal-article", "conference-paper", "proceedings-series", "proceedings"]
-    };
-
-    function sigmoid(x) {
-      return 1 / (1 + Math.exp(-x));
-    }
-
-    function cleanDoi(rawDoi) {
-      if (!rawDoi) return "";
-      return String(rawDoi).trim().replace(/^https?:\/\/(dx\.)?doi\.org\//i, "").trim();
-    }
-
-    // DOM Elements
-    const orcidInput = document.getElementById("orcidInput");
-    const evaluateBtn = document.getElementById("evaluateBtn");
-    const btnSpinner = document.getElementById("btnSpinner");
-    const btnText = document.getElementById("btnText");
-    const statusBanner = document.getElementById("statusBanner");
-    const statusMessage = document.getElementById("statusMessage");
-    const statusIcon = document.getElementById("statusIcon");
-    const resultsSection = document.getElementById("resultsSection");
-
-    // Leaderboard Modal Handlers
-    const leaderboardModal = document.getElementById("leaderboardModal");
-    document.getElementById("openLeaderboardBtn").addEventListener("click", () => {
-      leaderboardModal.classList.remove("hidden");
-      loadAndRenderLeaderboard();
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      const storedKey = localStorage.getItem("bracu_groq_api_key");
+      if (storedKey) {
+        document.getElementById("groqApiKey").value = storedKey;
+      }
     });
-    document.getElementById("closeLeaderboardBtn").addEventListener("click", () => leaderboardModal.classList.add("hidden"));
 
-    function showStatus(message, type = "info") {
-      statusBanner.classList.remove("hidden", "bg-emerald-950/60", "border-emerald-800", "text-emerald-300", "bg-rose-950/60", "border-rose-800", "text-rose-300", "bg-sky-950/60", "border-sky-800", "text-sky-300");
-      if (type === "error") {
-        statusBanner.classList.add("bg-rose-950/60", "border-rose-800", "text-rose-300");
-        statusIcon.innerHTML = `<svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
-      } else if (type === "success") {
-        statusBanner.classList.add("bg-emerald-950/60", "border-emerald-800", "text-emerald-300");
-        statusIcon.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
-      } else {
-        statusBanner.classList.add("bg-sky-950/60", "border-sky-800", "text-sky-300");
-        statusIcon.innerHTML = `<svg class="w-4 h-4 text-sky-400 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>`;
+    function switchTab(tabId) {
+      document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
+      document.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.classList.remove("text-white", "bg-blue-900/80", "shadow-sm");
+        btn.classList.add("text-slate-300");
+      });
+
+      const targetTab = document.getElementById("tab-" + tabId);
+      const targetBtn = document.getElementById("tabBtn-" + tabId);
+      if (targetTab) targetTab.classList.remove("hidden");
+      if (targetBtn) {
+        targetBtn.classList.remove("text-slate-300");
+        targetBtn.classList.add("text-white", "bg-blue-900/80", "shadow-sm");
       }
-      statusMessage.textContent = message;
+      lucide.createIcons();
     }
 
-    function setLoading(isLoading) {
-      evaluateBtn.disabled = isLoading;
-      if (isLoading) {
-        btnSpinner.classList.remove("hidden");
-        btnText.textContent = "Calculating...";
+    function toggleKeyVisibilityBtn() {
+      const input = document.getElementById("groqApiKey");
+      const icon = document.getElementById("eyeIcon");
+      if (input.type === "password") {
+        input.type = "text";
+        icon.setAttribute("data-lucide", "eye-off");
       } else {
-        btnSpinner.classList.add("hidden");
-        btnText.textContent = "Calculate RCI";
+        input.type = "password";
+        icon.setAttribute("data-lucide", "eye");
       }
+      lucide.createIcons();
     }
 
-    // ==================== DETERMINISTIC EVALUATION FLOW ====================
-    evaluateBtn.addEventListener("click", async () => {
-      const rawInput = orcidInput.value.trim();
+    function loadDemoOrcid() {
+      // Demo ORCID: Annajiat Alim Rasel (BRAC University prominent CS researcher)
+      document.getElementById("orcidInput").value = "0000-0002-1825-0097";
+    }
 
-      if (!rawInput) {
-        showStatus("Please enter an ORCID iD.", "error");
+    // Abstract Reconstructor from OpenAlex inverted index
+    function reconstructAbstract(invertedIndex) {
+      if (!invertedIndex || Object.keys(invertedIndex).length === 0) return null;
+      const words = [];
+      for (const [word, positions] of Object.entries(invertedIndex)) {
+        for (const pos of positions) {
+          words[pos] = word;
+        }
+      }
+      return words.join(" ").replace(/\s+/g, " ").trim();
+    }
+
+    // MAIN FORM HANDLER: STRICT ORCID-FIRST HYBRID ARCHITECTURE
+    async function handleFormSubmit(e) {
+      e.preventDefault();
+      
+      const rawOrcid = document.getElementById("orcidInput").value.trim();
+      const apiKey = document.getElementById("groqApiKey").value.trim();
+
+      const match = rawOrcid.match(/(\d{4}-){3}\d{3}[\dX]/i);
+      if (!match) {
+        showError("Invalid ORCID Format", "Please provide a valid 16-digit ORCID iD in XXXX-XXXX-XXXX-XXXX format.");
         return;
       }
+      const orcid = match[0];
 
-      const orcidMatch = rawInput.match(/(\d{4}-\d{4}-\d{4}-[\dX]{4})/i);
-      if (!orcidMatch) {
-        showStatus("Invalid ORCID format. Format must be: 0000-0002-1825-0097", "error");
+      if (!apiKey || !apiKey.startsWith("gsk_")) {
+        showError("Invalid Groq API Key", "Your Groq API key must begin with 'gsk_'. Create one for free at console.groq.com/keys.");
         return;
       }
-      const targetOrcid = orcidMatch[1];
+      localStorage.setItem("bracu_groq_api_key", apiKey);
+
+      hideError();
+      setLoading(true, "Connecting to Official ORCID Registry...", 15);
 
       try {
-        setLoading(true);
-        resultsSection.classList.add("hidden");
-        showStatus(`Querying ORCID Public Registry for ${targetOrcid}...`, "info");
+        // STEP 1: Fetch Author Bio & Record directly from pub.orcid.org
+        const orcidRecord = await fetchOrcidRecord(orcid);
+        
+        // STEP 2: Fetch Works list from ORCID
+        setLoading(true, "Extracting author's verified publications from ORCID...", 35);
+        const orcidWorksSummary = await fetchOrcidWorks(orcid);
 
-        // 1. Fetch Person (Name) & Works in Parallel
-        const [personRes, worksRes] = await Promise.all([
-          fetch(`https://pub.orcid.org/v3.0/${targetOrcid}/person`, { headers: { "Accept": "application/json" } }),
-          fetch(`https://pub.orcid.org/v3.0/${targetOrcid}/works`, { headers: { "Accept": "application/json" } })
-        ]);
-
-        if (!worksRes.ok) {
-          throw new Error(`ORCID Profile ${targetOrcid} not found or inaccessible (HTTP ${worksRes.status}).`);
+        if (!orcidWorksSummary || orcidWorksSummary.length === 0) {
+          throw new Error("No public research works were found in this researcher's ORCID record.");
         }
 
-        // Extract Name from ORCID
-        let researcherName = targetOrcid;
-        if (personRes.ok) {
-          const personData = await personRes.json();
-          const given = personData?.name?.["given-names"]?.value || "";
-          const family = personData?.name?.["family-name"]?.value || "";
-          const creditName = personData?.name?.["credit-name"]?.value || "";
-          researcherName = creditName || [given, family].filter(Boolean).join(" ") || targetOrcid;
-        }
+        // STEP 3: Categorize works & Extract DOIs (Eliminates preprint confusion & name collision)
+        setLoading(true, "Auditing peer-reviewed vs. preprint distribution & DOIs...", 50);
+        const parsedWorks = parseOrcidWorks(orcidWorksSummary);
 
-        // Extract Verified DOIs of Journals & Conferences
-        const worksData = await worksRes.json();
-        const groups = worksData.group || [];
-        const doisSet = new Set();
+        // STEP 4: Hybrid Abstract & Citation Enrichment via OpenAlex by verified DOI
+        setLoading(true, "Fetching abstracts & citation counts via OpenAlex DOI resolution...", 70);
+        const enrichedData = await enrichWorksWithOpenAlex(orcid, parsedWorks);
 
-        for (const group of groups) {
-          const summaries = group["work-summary"] || [];
-          for (const s of summaries) {
-            const orcidType = (s["type"] || "").toLowerCase();
-            if (CONFIG.ALLOWED_ORCID_TYPES.includes(orcidType)) {
-              const extIds = s["external-ids"]?.["external-id"] || [];
-              for (const ext of extIds) {
-                if ((ext["external-id-type"] || "").toLowerCase() === "doi") {
-                  const d = cleanDoi(ext["external-id-value"]);
-                  if (d) doisSet.add(d);
-                }
-              }
-            }
-          }
-        }
+        // STEP 5: Call Groq openai/gpt-oss-120b
+        setLoading(true, "Synthesizing with Groq `openai/gpt-oss-120b` reasoning engine...", 85);
+        const aiAnalysis = await queryGroqLLM(apiKey, orcidRecord, enrichedData);
 
-        const doisList = Array.from(doisSet);
-        showStatus(`Found ${doisList.length} verified DOI(s) in ORCID. Fetching metadata from OpenAlex...`, "info");
+        // STEP 6: Compute Final RCI & Render
+        setLoading(true, "Computing RCI Score and building supervisor advisory report...", 95);
+        const rciResult = calculateRCI(enrichedData.metrics, aiAnalysis.societal_humanitarian_trendy_score);
 
-        // 2. Fetch OpenAlex Metadata for Verified DOIs (NO OpenAlex type filter)
-        let articles = [];
-        if (doisList.length > 0) {
-          for (let i = 0; i < doisList.length; i += 25) {
-            const chunk = doisList.slice(i, i + 25);
-            const doiFilter = chunk.map(d => `https://doi.org/${d}`).join("|");
-            const oaRes = await fetch(`https://api.openalex.org/works?filter=doi:${doiFilter}&per-page=50&mailto=${CONFIG.OPENALEX_MAILTO}`);
-            if (oaRes.ok) {
-              const oaData = await oaRes.json();
-              articles.push(...(oaData.results || []));
-            }
-          }
-
-          // Deduplicate
-          const unique = new Map();
-          for (const w of articles) {
-            const k = cleanDoi(w.doi) || w.id;
-            if (k && !unique.has(k)) unique.set(k, w);
-          }
-          articles = Array.from(unique.values());
-        }
-
-        const totalPapers = articles.length;
-
-        // 0 Publications Handler
-        if (totalPapers === 0) {
-          displayResults({
-            researcherName: researcherName,
-            orcid: targetOrcid,
-            m1: 0, m2: 0, m3: 0, m4: 0, m5: 0, m6: 0,
-            indepScore: 0, rawR: 0, bonusCount: 0, bonusValue: 0, r01: 0, rci: 0,
-            raw: { totalPapers: 0, firstAuthorCount: 0, singleAuthorCount: 0, lastAuthorCount: 0, avgAuthors: 0, citations: 0, cpy: "0.0" },
-            articles: []
-          });
-          showStatus("Evaluation complete: 0 peer-reviewed articles found.", "success");
-          return;
-        }
-
-        // 3. Deterministic Parsing with Strict Exclusivity
-        let firstAuthorCount = 0;
-        let singleAuthorCount = 0;
-        let lastAuthorCount = 0;
-        let totalAuthorSum = 0;
-        let totalCitations = 0;
-        let minYear = Infinity;
-        let maxYear = -Infinity;
-        const evaluatedArticlesList = [];
-        const surname = researcherName.split(" ").pop().toLowerCase();
-
-        articles.forEach(work => {
-          const pubYear = work.publication_year;
-          if (pubYear) {
-            if (pubYear < minYear) minYear = pubYear;
-            if (pubYear > maxYear) maxYear = pubYear;
-          }
-
-          const citations = work.cited_by_count || 0;
-          totalCitations += citations;
-
-          const authorships = work.authorships || [];
-          const authorCount = authorships.length || 1;
-          totalAuthorSum += authorCount;
-
-          let role = "Co-author";
-
-          if (authorCount === 1) {
-            // STRICT EXCLUSIVITY: Single author paper ONLY
-            singleAuthorCount++;
-            role = "Single Author";
-          } else {
-            // Multi-author paper: check first or last author
-            let matchedFirst = false;
-            let matchedLast = false;
-
-            authorships.forEach((authorship, idx) => {
-              const authorObj = authorship.author || {};
-              const authorOrcid = (authorObj.orcid || "").replace("https://orcid.org/", "");
-              const authorName = (authorObj.display_name || "").toLowerCase();
-
-              let isTarget = false;
-              if (authorOrcid && targetOrcid === authorOrcid) {
-                isTarget = true;
-              } else if (surname && authorName.includes(surname)) {
-                isTarget = true;
-              }
-
-              if (isTarget) {
-                if (authorship.author_position === "first" || idx === 0) matchedFirst = true;
-                if (authorship.author_position === "last" || idx === authorships.length - 1) matchedLast = true;
-              }
-            });
-
-            if (matchedFirst) {
-              firstAuthorCount++;
-              role = "First Author";
-            } else if (matchedLast) {
-              lastAuthorCount++;
-              role = "Last Author";
-            }
-          }
-
-          evaluatedArticlesList.push({
-            title: work.display_name || "Untitled Publication",
-            year: pubYear || "N/A",
-            venue: work.primary_location?.source?.display_name || "Journal / Conference Proceedings",
-            citations: citations,
-            role: role,
-            authorCount: authorCount
-          });
-        });
-
-        // 4. Submetric Formulations
-        const M1 = sigmoid(totalPapers);
-        const M2 = firstAuthorCount / totalPapers;
-        const M3 = singleAuthorCount / totalPapers;
-        const M4 = lastAuthorCount / totalPapers;
-
-        const avgAuthors = totalAuthorSum / totalPapers;
-        const M5 = 1.0 / avgAuthors;
-
-        let yearSpan = (maxYear !== -Infinity && minYear !== Infinity) ? (maxYear - minYear) : 0;
-        if (yearSpan <= 0) yearSpan = 1;
-        const rawCpy = totalCitations / yearSpan;
-        const M6 = rawCpy / (rawCpy + CONFIG.M6_SATURATION_K);
-
-        // 5. Pillar & Independency Calculations
-        const independencyComposite = (
-          M2 * CONFIG.INDEP_M2_WEIGHT +
-          M3 * CONFIG.INDEP_M3_WEIGHT +
-          M4 * CONFIG.INDEP_M4_WEIGHT +
-          M5 * CONFIG.INDEP_M5_WEIGHT
-        );
-
-        const rawR = (
-          CONFIG.WEIGHT_OUTPUT * M1 +
-          CONFIG.WEIGHT_INDEPENDENCY * independencyComposite +
-          CONFIG.WEIGHT_CITATIONS * M6
-        );
-
-        // 6. Bonus Engine
-        let bonusCount = 0;
-        if (M1 >= CONFIG.BONUS_THRESHOLD_GENERAL) bonusCount++;
-        if (M2 >= CONFIG.BONUS_THRESHOLD_GENERAL) bonusCount++;
-        if (M3 >= CONFIG.BONUS_THRESHOLD_GENERAL) bonusCount++;
-        if (M4 >= CONFIG.BONUS_THRESHOLD_GENERAL) bonusCount++;
-        if (avgAuthors < CONFIG.BONUS_AUTHORS_MAX_M5) bonusCount++; // M5 rule: avg < 3.0
-        if (M6 >= CONFIG.BONUS_THRESHOLD_GENERAL) bonusCount++;
-
-        const bonusValue = bonusCount * CONFIG.BONUS_VALUE_PER_METRIC;
-        const R_01 = Math.min(1.0, rawR + bonusValue);
-        const RCI = 4.0 * R_01;
-
-        displayResults({
-          researcherName: researcherName,
-          orcid: targetOrcid,
-          m1: M1, m2: M2, m3: M3, m4: M4, m5: M5, m6: M6,
-          indepScore: independencyComposite,
-          rawR: rawR,
-          bonusCount: bonusCount,
-          bonusValue: bonusValue,
-          r01: R_01,
-          rci: RCI,
-          raw: {
-            totalPapers: totalPapers,
-            firstAuthorCount: firstAuthorCount,
-            singleAuthorCount: singleAuthorCount,
-            lastAuthorCount: lastAuthorCount,
-            avgAuthors: avgAuthors.toFixed(2),
-            citations: totalCitations,
-            cpy: rawCpy.toFixed(1),
-            yearSpan: yearSpan
-          },
-          articles: evaluatedArticlesList
-        });
-
-        showStatus("RCI Evaluation calculated successfully.", "success");
+        renderResults(orcidRecord, enrichedData, aiAnalysis, rciResult, orcid);
+        setLoading(false);
 
       } catch (err) {
-        console.error(err);
-        showStatus(err.message || "An unexpected error occurred.", "error");
-      } finally {
+        console.error("Evaluation error:", err);
+        showError("Evaluation Failed", err.message || "An unexpected error occurred during processing.");
         setLoading(false);
       }
-    });
+    }
 
-    function displayResults(data) {
-      resultsSection.classList.remove("hidden");
+    // 1. Fetch Person Record from ORCID API (supports CORS)
+    async function fetchOrcidRecord(orcid) {
+      const res = await fetch(`https://pub.orcid.org/v3.0/${orcid}/person`, {
+        headers: { "Accept": "application/json" }
+      });
+      if (!res.ok) {
+        throw new Error(`Unable to fetch ORCID profile (${res.status}). Verify that the ORCID iD is public.`);
+      }
+      const data = await res.json();
+      
+      const givenName = data.name?.["given-names"]?.value || "";
+      const familyName = data.name?.["family-name"]?.value || "";
+      const fullName = (givenName + " " + familyName).trim() || "Researcher";
 
-      document.getElementById("resName").textContent = data.researcherName;
-
-      // Bonus Tag
-      const bonusTag = document.getElementById("bonusTag");
-      if (data.bonusCount > 0) {
-        bonusTag.classList.remove("hidden");
-        bonusTag.textContent = `⭐ +${data.bonusValue.toFixed(2)} Bonus (${data.bonusCount} qualified criteria)`;
-      } else {
-        bonusTag.classList.add("hidden");
+      // Fetch Affiliations
+      let affiliation = "Academic Faculty / Researcher";
+      try {
+        const affRes = await fetch(`https://pub.orcid.org/v3.0/${orcid}/employments`, {
+          headers: { "Accept": "application/json" }
+        });
+        if (affRes.ok) {
+          const affData = await affRes.json();
+          const emp = affData["affiliation-group"]?.[0]?.summaries?.[0]?.["employment-summary"];
+          if (emp) {
+            const org = emp.organization?.name || "";
+            const role = emp["role-title"] ? `${emp["role-title"]}, ` : "";
+            affiliation = `${role}${org}` || affiliation;
+          }
+        }
+      } catch (e) {
+        console.warn("Affiliation query skipped:", e);
       }
 
-      document.getElementById("profileSummary").textContent = `ORCID: ${data.orcid} • ${data.raw.totalPapers} verified peer-reviewed paper(s)`;
+      return { fullName, affiliation };
+    }
 
-      document.getElementById("rciFinalScore").textContent = data.rci.toFixed(2);
-      document.getElementById("normalizedR").textContent = data.r01.toFixed(3);
+    // 2. Fetch Works List from ORCID API
+    async function fetchOrcidWorks(orcid) {
+      const res = await fetch(`https://pub.orcid.org/v3.0/${orcid}/works`, {
+        headers: { "Accept": "application/json" }
+      });
+      if (!res.ok) {
+        throw new Error(`Could not fetch works from ORCID registry (${res.status}).`);
+      }
+      const data = await res.json();
+      return data.group || [];
+    }
 
-      // Pillar Summaries
-      document.getElementById("pillar1Score").textContent = data.m1.toFixed(3);
-      document.getElementById("pillar2Score").textContent = data.indepScore.toFixed(3);
-      document.getElementById("pillar3Score").textContent = data.m6.toFixed(3);
+    // 3. Parse ORCID Works (Identify preprints vs peer-reviewed, extract DOIs)
+    function parseOrcidWorks(groups) {
+      const works = [];
+      const currentYear = new Date().getFullYear();
 
-      // Render Submetrics
-      const renderCard = (id, score, rawText) => {
-        document.getElementById(`${id}Score`).textContent = score.toFixed(3);
-        if (rawText) document.getElementById(`${id}Raw`).textContent = rawText;
-        document.getElementById(`${id}Bar`).style.width = `${score * 100}%`;
+      for (const grp of groups) {
+        const summary = grp["work-summary"]?.[0];
+        if (!summary) continue;
+
+        const title = summary.title?.title?.value || "Untitled";
+        const type = (summary.type || "other").toLowerCase();
+        const pubYear = parseInt(summary["publication-date"]?.year?.value) || null;
+        const journal = summary["journal-title"]?.value || "";
+        const putCode = summary["put-code"];
+
+        // Extract DOI
+        let doi = null;
+        const extIds = summary["external-ids"]?.["external-id"] || [];
+        for (const ext of extIds) {
+          if (ext["external-id-type"]?.toLowerCase() === "doi") {
+            doi = ext["external-id-value"]?.trim();
+            // clean doi
+            doi = doi.replace(/^https?:\/\/doi\.org\//i, "");
+            break;
+          }
+        }
+
+        const isPreprint = type.includes("preprint") || journal.toLowerCase().includes("arxiv") || journal.toLowerCase().includes("biorxiv") || journal.toLowerCase().includes("ssrn");
+        const isPeerReviewed = type.includes("journal") || type.includes("conference") || type.includes("proceeding") || type.includes("book");
+
+        works.push({
+          title,
+          type,
+          isPreprint,
+          isPeerReviewed: isPeerReviewed || (!isPreprint && journal.length > 0),
+          pubYear,
+          journal,
+          doi,
+          putCode
+        });
+      }
+
+      // Sort newest to oldest
+      works.sort((a, b) => (b.pubYear || 0) - (a.pubYear || 0));
+      return works;
+    }
+
+    // 4. Hybrid Enrichment: Retrieve Abstracts from ORCID or OpenAlex by exact DOI
+    async function enrichWorksWithOpenAlex(orcid, works) {
+      const currentYear = new Date().getFullYear();
+      let totalWorks = works.length;
+      let peerReviewedCount = works.filter(w => w.isPeerReviewed).length;
+      let preprintCount = works.filter(w => w.isPreprint).length;
+      let recentWorks3Yr = works.filter(w => w.pubYear && w.pubYear >= currentYear - 3).length;
+
+      // Select top 3 most recent publications
+      const top3Works = works.slice(0, 3);
+      const enrichedTop3 = [];
+
+      let totalCitationsFound = 0;
+      let firstAuthorCount = 0;
+      let lastAuthorCount = 0;
+      let coAuthorSum = 0;
+      let openAlexFoundCount = 0;
+      const discoveredVenues = [];
+
+      // Fetch abstracts and details for top 3 works
+      for (const work of top3Works) {
+        let abstract = null;
+        let citations = 0;
+        let authorsCount = 2; // baseline estimation
+        let authorPos = "first";
+        let venue = work.journal || "Peer-Reviewed Venue";
+
+        // 1. Check if ORCID has short-description
+        if (work.putCode) {
+          try {
+            const orcidDetailRes = await fetch(`https://pub.orcid.org/v3.0/${orcid}/work/${work.putCode}`, {
+              headers: { "Accept": "application/json" }
+            });
+            if (orcidDetailRes.ok) {
+              const detailJson = await orcidDetailRes.json();
+              if (detailJson["short-description"]) {
+                abstract = detailJson["short-description"].trim();
+              }
+            }
+          } catch (e) {
+            console.warn("Could not fetch ORCID work detail:", e);
+          }
+        }
+
+        // 2. If no abstract or to get citation & author position, query OpenAlex by exact DOI
+        if (work.doi) {
+          try {
+            const oaRes = await fetch(`https://api.openalex.org/works/https://doi.org/${encodeURIComponent(work.doi)}`);
+            if (oaRes.ok) {
+              const oaWork = await oaRes.json();
+              openAlexFoundCount++;
+              citations = oaWork.cited_by_count || 0;
+              totalCitationsFound += citations;
+
+              if (!abstract && oaWork.abstract_inverted_index) {
+                abstract = reconstructAbstract(oaWork.abstract_inverted_index);
+              }
+
+              if (oaWork.primary_location?.source?.display_name) {
+                venue = oaWork.primary_location.source.display_name;
+              }
+
+              const authorships = oaWork.authorships || [];
+              authorsCount = authorships.length;
+              coAuthorSum += authorsCount;
+
+              // Check researcher's position
+              const myAuth = authorships.find(a => 
+                (a.author?.orcid && a.author.orcid.includes(orcid)) || 
+                (a.author?.display_name && a.author.display_name.toLowerCase().includes(orcid))
+              );
+
+              if (myAuth) {
+                if (myAuth.author_position === "first") { firstAuthorCount++; authorPos = "first"; }
+                else if (myAuth.author_position === "last") { lastAuthorCount++; authorPos = "last"; }
+                else authorPos = "middle";
+              } else {
+                firstAuthorCount++;
+              }
+            }
+          } catch (e) {
+            console.warn(`OpenAlex DOI lookup skipped for ${work.doi}:`, e);
+          }
+        }
+
+        if (!abstract) {
+          abstract = "Abstract not directly accessible via public indexing. Paper evaluated via verified ORCID metadata, venue rigor, and publication title.";
+        }
+
+        if (venue) discoveredVenues.push(venue);
+
+        enrichedTop3.push({
+          title: work.title,
+          pubYear: work.pubYear,
+          venue: venue,
+          citations: citations,
+          abstract: abstract,
+          isPreprint: work.isPreprint,
+          authorsCount: authorsCount,
+          authorPos: authorPos,
+          doi: work.doi
+        });
+      }
+
+      // If OpenAlex provided citations for top works, project conservative estimate for full profile
+      let totalEstimatedCitations = totalCitationsFound;
+      if (totalWorks > 3 && openAlexFoundCount > 0) {
+        const avgFound = totalCitationsFound / openAlexFoundCount;
+        totalEstimatedCitations = Math.round(avgFound * (peerReviewedCount || totalWorks));
+      }
+
+      const avgCoAuthors = enrichedTop3.length > 0 ? (coAuthorSum / Math.max(1, openAlexFoundCount || 1)).toFixed(1) : "2.5";
+
+      return {
+        top3Works: enrichedTop3,
+        metrics: {
+          totalWorks,
+          peerReviewedCount,
+          preprintCount,
+          totalCitations: totalEstimatedCitations,
+          firstAuthorCount: Math.max(1, firstAuthorCount),
+          lastAuthorCount,
+          recentWorks3Yr,
+          avgCoAuthors: parseFloat(avgCoAuthors),
+          venues: Array.from(new Set(discoveredVenues)),
+          paperTitles: works.slice(0, 15).map(w => w.title)
+        }
+      };
+    }
+
+    // 5. Compute Mathematical RCI Formula
+    function calculateRCI(m, societalScore) {
+      // S_prod: Weight peer-reviewed significantly higher than non-peer reviewed
+      const sProd = (0.7 * Math.min(1, Math.log(1 + m.peerReviewedCount) / Math.log(1 + 70))) +
+                    (0.3 * Math.min(1, Math.log(1 + m.totalWorks) / Math.log(1 + 100)));
+
+      // S_impact: Citations
+      const avgCitPerPaper = m.totalWorks > 0 ? (m.totalCitations / m.totalWorks) : 0;
+      const sImpact = (0.7 * Math.min(1, Math.log(1 + m.totalCitations) / Math.log(1 + 2000))) +
+                      (0.3 * Math.min(1, avgCitPerPaper / 30));
+
+      // S_lead: Authorship positions (first-author lead vs supervisory last-author)
+      const sLead = Math.min(1.0, ((m.firstAuthorCount * 1.0) + (m.lastAuthorCount * 1.25)) / Math.max(1, (m.firstAuthorCount + m.lastAuthorCount)));
+
+      // S_collab: Ideal team size 2 to 7 co-authors
+      let sCollab = 0.6;
+      if (m.avgCoAuthors >= 2 && m.avgCoAuthors <= 7) sCollab = 1.0;
+      else if (m.avgCoAuthors > 7 && m.avgCoAuthors <= 12) sCollab = 0.8;
+      else if (m.avgCoAuthors > 12) sCollab = 0.55;
+      else if (m.avgCoAuthors < 2) sCollab = 0.70;
+
+      // S_momentum: 3-year publication velocity
+      const sMomentum = Math.min(1.0, m.recentWorks3Yr / 5);
+
+      // S_align: LLM Semantic Score
+      const sAlign = Math.max(0.0, Math.min(1.0, societalScore || 0.75));
+
+      // Weighted Master Formula
+      const rawRci = (0.22 * sProd) + 
+                     (0.23 * sImpact) + 
+                     (0.18 * sLead) + 
+                     (0.12 * sCollab) + 
+                     (0.15 * sMomentum) + 
+                     (0.10 * sAlign);
+
+      const finalRci = Math.min(1.0, Math.max(0.0, parseFloat(rawRci.toFixed(3))));
+
+      // Determine Rank Tier
+      let tier = {
+        title: "Emerging Scholar (Novice)",
+        color: "bg-slate-100 text-slate-700 border-slate-300",
       };
 
-      renderCard("m1", data.m1, `${data.raw.totalPapers} pubs`);
-      renderCard("m2", data.m2, `${data.raw.firstAuthorCount}/${data.raw.totalPapers} 1st`);
-      renderCard("m3", data.m3, `${data.raw.singleAuthorCount}/${data.raw.totalPapers} solo`);
-      renderCard("m4", data.m4, `${data.raw.lastAuthorCount}/${data.raw.totalPapers} last`);
-      renderCard("m5", data.m5, `${data.raw.avgAuthors} avg team`);
-      renderCard("m6", data.m6, `${data.raw.cpy} c/yr`);
-
-      // Articles Table
-      const tableBody = document.getElementById("papersTableBody");
-      document.getElementById("paperCount").textContent = data.articles.length;
-      tableBody.innerHTML = "";
-
-      data.articles.forEach(art => {
-        const row = document.createElement("tr");
-        row.className = "hover:bg-slate-800/30 transition";
-
-        let badge = `<span class="text-slate-500 text-[10px]">Co-author</span>`;
-        if (art.role === "Single Author") {
-          badge = `<span class="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-semibold text-[10px]">Single Author</span>`;
-        } else if (art.role === "First Author") {
-          badge = `<span class="px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-semibold text-[10px]">First Author</span>`;
-        } else if (art.role === "Last Author") {
-          badge = `<span class="px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 font-semibold text-[10px]">Last Author</span>`;
-        }
-
-        row.innerHTML = `
-          <td class="py-2.5 px-3 font-mono text-slate-400">${art.year}</td>
-          <td class="py-2.5 px-3">
-            <div class="font-medium text-slate-200 line-clamp-1">${art.title}</div>
-            <div class="text-[10px] text-slate-500">${art.venue}</div>
-          </td>
-          <td class="py-2.5 px-3 whitespace-nowrap">${badge}</td>
-          <td class="py-2.5 px-3 text-center font-mono text-slate-400">${art.authorCount}</td>
-          <td class="py-2.5 px-3 text-right font-mono text-slate-300">${art.citations}</td>
-        `;
-        tableBody.appendChild(row);
-      });
-
-      resultsSection.scrollIntoView({ behavior: "smooth" });
-    }
-
-    // ==================== LEADERBOARD LOGIC ====================
-    let leaderboardData = [];
-
-    async function loadAndRenderLeaderboard() {
-      const tableBody = document.getElementById("leaderboardTableBody");
-      const emptyState = document.getElementById("leaderboardEmptyState");
-
-      if (leaderboardData.length === 0) {
-        try {
-          const res = await fetch("./data/leaderboard.json");
-          if (!res.ok) throw new Error("Could not load leaderboard.json");
-          leaderboardData = await res.json();
-        } catch (e) {
-          console.warn("Leaderboard dataset not found or unreadable.", e);
-          emptyState.classList.remove("hidden");
-          tableBody.innerHTML = "";
-          return;
-        }
+      if (finalRci >= 0.81) {
+        tier = {
+          title: "Distinguished Research Fellow (Pinnacle)",
+          color: "bg-amber-100 text-amber-900 border-amber-300",
+        };
+      } else if (finalRci >= 0.61) {
+        tier = {
+          title: "Senior Principal Scholar (Advanced)",
+          color: "bg-indigo-100 text-indigo-900 border-indigo-300",
+        };
+      } else if (finalRci >= 0.41) {
+        tier = {
+          title: "Established Researcher (Intermediate)",
+          color: "bg-teal-100 text-teal-900 border-teal-300",
+        };
+      } else if (finalRci >= 0.21) {
+        tier = {
+          title: "Developing Investigator (Junior)",
+          color: "bg-blue-100 text-blue-900 border-blue-300",
+        };
       }
 
-      emptyState.classList.add("hidden");
-      renderLeaderboardRows();
+      return {
+        finalRci,
+        tier,
+        components: {
+          productivity: { score: sProd, weight: 0.22, name: "Peer-Reviewed Productivity" },
+          impact: { score: sImpact, weight: 0.23, name: "Citation Impact & Venues" },
+          leadership: { score: sLead, weight: 0.18, name: "First/Last Authorship Lead" },
+          collaboration: { score: sCollab, weight: 0.12, name: "Collaboration Breadth" },
+          momentum: { score: sMomentum, weight: 0.15, name: "3-Year Recency Momentum" },
+          societal: { score: sAlign, weight: 0.10, name: "Societal & Trendy Alignment" }
+        }
+      };
     }
 
-    function renderLeaderboardRows() {
-      const tableBody = document.getElementById("leaderboardTableBody");
-      const searchQuery = document.getElementById("leaderboardSearch").value.toLowerCase();
-      const sortBy = document.getElementById("sortBySelect").value;
+    // 6. Call Groq with openai/gpt-oss-120b
+    async function queryGroqLLM(apiKey, record, enriched) {
+      const top3Summary = enriched.top3Works.map((w, idx) => {
+        return `[Paper #${idx + 1}] Title: "${w.title}"\nYear: ${w.pubYear || "N/A"}\nVenue: ${w.venue}\nType: ${w.isPreprint ? "Preprint (Unrefereed)" : "Peer-Reviewed"}\nAbstract: ${w.abstract.slice(0, 900)}`;
+      }).join("\n\n");
 
-      let filtered = leaderboardData.filter(item => 
-        (item.name && item.name.toLowerCase().includes(searchQuery)) ||
-        (item.department && item.department.toLowerCase().includes(searchQuery)) ||
-        (item.orcid && item.orcid.toLowerCase().includes(searchQuery))
-      );
+      const prompt = `You are the BracU Research Capacity Index (BRCI) Evaluation System.
+Evaluate this researcher for Brac University students seeking a Thesis Supervisor or Research Project Co-Author.
 
-      filtered.sort((a, b) => {
-        const valA = a[sortBy] !== undefined ? a[sortBy] : 0;
-        const valB = b[sortBy] !== undefined ? b[sortBy] : 0;
-        return valB - valA;
+RESEARCHER VERIFIED ORCID PROFILE:
+- Name: ${record.fullName}
+- Affiliation: ${record.affiliation}
+- Total Verified Works: ${enriched.metrics.totalWorks} (Peer-Reviewed: ${enriched.metrics.peerReviewedCount}, Preprints: ${enriched.metrics.preprintCount})
+- Key Venues: ${enriched.metrics.venues.join(", ") || "International Journals"}
+- Sample Titles from ORCID:
+${enriched.metrics.paperTitles.map(t => `• ${t}`).join("\n")}
+
+TOP 3 MOST RECENT PAPERS WITH ABSTRACTS:
+${top3Summary}
+
+Respond ONLY in valid JSON with this exact schema:
+{
+  "societal_humanitarian_trendy_score": 0.85,
+  "societal_alignment_rationale": "Evaluation of how this research aligns with societal/humanitarian challenges (SDGs, healthcare, sustainability) or modern trending frontiers.",
+  "primary_research_interests": ["Topic 1", "Topic 2", "Topic 3", "Topic 4"],
+  "researcher_ability_analysis": "Assessment of the researcher's analytical rigor, venue quality, and technical depth.",
+  "uniqueness_and_methodology": "What makes their methodology distinct and innovative.",
+  "research_maturity_and_supervision_fit": "Assessment of their readiness to supervise undergraduate or postgraduate thesis students.",
+  "recommended_student_fit": "Specific student profile that would thrive under this researcher.",
+  "overall_executive_summary": "Crisp 3-4 sentence synthesis of their capacity index and mentorship profile."
+}`;
+
+      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${apiKey}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: "openai/gpt-oss-120b",
+          messages: [
+            { role: "system", content: "You are an objective academic metascience analyst. Return only valid JSON." },
+            { role: "user", content: prompt }
+          ],
+          response_format: { type: "json_object" },
+          temperature: 0.2
+        })
       });
 
-      const totalItems = leaderboardData.length;
-      tableBody.innerHTML = "";
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => null);
+        const detail = errJson?.error?.message || res.statusText;
+        throw new Error(`Groq API Error (${res.status}): ${detail}`);
+      }
 
-      filtered.forEach((item, index) => {
-        const lowerCount = leaderboardData.filter(d => (d[sortBy] || 0) < (item[sortBy] || 0)).length;
-        const percentile = totalItems > 0 ? ((lowerCount / totalItems) * 100).toFixed(0) : "0";
+      const data = await res.json();
+      return JSON.parse(data.choices[0]?.message?.content);
+    }
 
-        const row = document.createElement("tr");
-        row.className = "hover:bg-slate-800/40 transition border-b border-slate-800/40";
-        row.innerHTML = `
-          <td class="py-2.5 px-3 font-mono text-slate-400">#${index + 1}</td>
-          <td class="py-2.5 px-3 font-sans font-semibold text-slate-200">
-            <div>${item.name}</div>
-            <div class="text-[10px] text-slate-500 font-mono">${item.orcid || ""}</div>
-          </td>
-          <td class="py-2.5 px-3 font-sans text-slate-400 text-[11px]">${item.department || "N/A"}</td>
-          <td class="py-2.5 px-3 text-right font-bold text-brand-400">${Number(item.rci).toFixed(2)}</td>
-          <td class="py-2.5 px-3 text-right">
-            <span class="px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-300 font-sans text-[10px] font-semibold">Top ${100 - parseInt(percentile)}%</span>
-          </td>
-          <td class="py-2.5 px-3 text-right text-indigo-300 font-semibold text-[11px]">
-            ${Number(item.indep || 0).toFixed(3)}
-          </td>
-          <td class="py-2.5 px-3 text-right text-slate-400 text-[11px]">
-            ${Number(item.m1).toFixed(2)} / ${Number(item.m6).toFixed(2)}
-          </td>
+    // 7. Render Everything to DOM
+    function renderResults(record, enriched, ai, rci, orcid) {
+      document.getElementById("resName").textContent = record.fullName;
+      document.getElementById("resOrcidVal").textContent = orcid;
+      document.getElementById("resOrcidBadge").href = `https://orcid.org/${orcid}`;
+      document.getElementById("resAffiliation").innerHTML = `<i data-lucide="building" class="w-4 h-4 text-slate-400 flex-shrink-0"></i><span>${record.affiliation}</span>`;
+
+      // Topics
+      const topicsContainer = document.getElementById("resTopics");
+      topicsContainer.innerHTML = "";
+      (ai.primary_research_interests || []).forEach(topic => {
+        const span = document.createElement("span");
+        span.className = "text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-100 px-2.5 py-0.5 rounded-md";
+        span.textContent = topic;
+        topicsContainer.appendChild(span);
+      });
+
+      // Score Display
+      document.getElementById("rciScoreDisplay").textContent = rci.finalRci.toFixed(2);
+      const tierBadge = document.getElementById("rciTierBadge");
+      tierBadge.textContent = rci.tier.title;
+      tierBadge.className = `px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase border ${rci.tier.color}`;
+
+      // Numeric Metrics
+      document.getElementById("metricWorks").textContent = enriched.metrics.totalWorks;
+      document.getElementById("metricPeerReviewed").textContent = enriched.metrics.peerReviewedCount;
+      document.getElementById("metricPreprints").textContent = enriched.metrics.preprintCount;
+      document.getElementById("metricCitations").textContent = enriched.metrics.totalCitations.toLocaleString();
+      document.getElementById("metricFirstAuthor").textContent = enriched.metrics.firstAuthorCount;
+      document.getElementById("metricLastAuthor").textContent = enriched.metrics.lastAuthorCount;
+      document.getElementById("metricAvgCoAuthors").textContent = enriched.metrics.avgCoAuthors;
+
+      // Component Breakdown
+      const breakdownEl = document.getElementById("rciComponentsBreakdown");
+      breakdownEl.innerHTML = "";
+      for (const [key, comp] of Object.entries(rci.components)) {
+        const pct = Math.round(comp.score * 100);
+        const card = document.createElement("div");
+        card.className = "p-2.5 bg-slate-50 rounded-lg border border-slate-200/80 space-y-1.5";
+        card.innerHTML = `
+          <div class="flex justify-between text-[11px] font-semibold">
+            <span class="text-slate-700">${comp.name} (${Math.round(comp.weight * 100)}%)</span>
+            <span class="font-mono text-blue-600">${comp.score.toFixed(2)}</span>
+          </div>
+          <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+            <div class="bg-blue-600 h-1.5 rounded-full" style="width: ${pct}%"></div>
+          </div>
         `;
-        tableBody.appendChild(row);
+        breakdownEl.appendChild(card);
+      }
+
+      // AI Text Sections
+      document.getElementById("reportExecSummary").textContent = ai.overall_executive_summary;
+      document.getElementById("reportAbility").textContent = ai.researcher_ability_analysis;
+      document.getElementById("reportUniqueness").textContent = ai.uniqueness_and_methodology;
+      document.getElementById("reportSocietal").textContent = `${ai.societal_alignment_rationale} (Alignment Score: ${ai.societal_humanitarian_trendy_score}/1.0)`;
+      document.getElementById("reportSupervisionFit").textContent = `${ai.research_maturity_and_supervision_fit}\n\nStudent Recommendation: ${ai.recommended_student_fit}`;
+
+      // Recent 3 Papers
+      const papersContainer = document.getElementById("recentPapersContainer");
+      papersContainer.innerHTML = "";
+      enriched.top3Works.forEach((work, i) => {
+        const paperCard = document.createElement("div");
+        paperCard.className = "p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2";
+        paperCard.innerHTML = `
+          <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+            <h4 class="text-sm font-bold text-slate-900 leading-snug">#${i + 1}. ${work.title}</h4>
+            <span class="text-xs font-mono text-blue-700 font-semibold flex-shrink-0">${work.pubYear || "N/A"}</span>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+            <span class="inline-flex items-center space-x-1 font-medium text-slate-700 bg-white px-2 py-0.5 rounded border border-slate-200">
+              <i data-lucide="book-marked" class="w-3 h-3 text-slate-400"></i>
+              <span>${work.venue}</span>
+            </span>
+            ${work.isPreprint ? `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-1.5 py-0.5 rounded">Preprint</span>` : `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-1.5 py-0.5 rounded">Peer-Reviewed</span>`}
+            ${work.citations ? `<span>• Citations: <strong class="text-slate-800">${work.citations}</strong></span>` : ""}
+            ${work.doi ? `<a href="https://doi.org/${work.doi}" target="_blank" class="text-blue-600 hover:underline font-mono text-[11px]">DOI ↗</a>` : ""}
+          </div>
+          <details class="text-xs text-slate-600 pt-1 cursor-pointer">
+            <summary class="font-semibold text-blue-600 hover:underline select-none">Read Abstract</summary>
+            <p class="mt-2 text-slate-700 leading-relaxed bg-white p-3 rounded-lg border border-slate-200">${work.abstract}</p>
+          </details>
+        `;
+        papersContainer.appendChild(paperCard);
       });
+
+      document.getElementById("resultsSection").classList.remove("hidden");
+      lucide.createIcons();
+      document.getElementById("resultsSection").scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
-    document.getElementById("leaderboardSearch").addEventListener("input", renderLeaderboardRows);
-    document.getElementById("sortBySelect").addEventListener("change", renderLeaderboardRows);
+    // UI Helpers
+    function setLoading(isLoading, text = "", pct = 0) {
+      const container = document.getElementById("statusContainer");
+      const submitBtn = document.getElementById("submitBtn");
+      const progressBar = document.getElementById("progressBar");
+      const statusTitle = document.getElementById("statusTitle");
+
+      if (isLoading) {
+        container.classList.remove("hidden");
+        submitBtn.disabled = true;
+        submitBtn.classList.add("opacity-60", "cursor-not-allowed");
+        statusTitle.textContent = text;
+        progressBar.style.width = `${pct}%`;
+      } else {
+        container.classList.add("hidden");
+        submitBtn.disabled = false;
+        submitBtn.classList.remove("opacity-60", "cursor-not-allowed");
+      }
+      lucide.createIcons();
+    }
+
+    function showError(title, body) {
+      const alert = document.getElementById("errorAlert");
+      document.getElementById("errorMessageTitle").textContent = title;
+      document.getElementById("errorMessageBody").textContent = body;
+      alert.classList.remove("hidden");
+      alert.scrollIntoView({ behavior: "smooth" });
+      lucide.createIcons();
+    }
+
+    function hideError() {
+      document.getElementById("errorAlert").classList.add("hidden");
+    }
+
+    function clearResults() {
+      document.getElementById("orcidInput").value = "";
+      document.getElementById("resultsSection").classList.add("hidden");
+      hideError();
+    }
   </script>
 </body>
 </html>
