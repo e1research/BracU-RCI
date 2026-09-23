@@ -98,11 +98,11 @@
         <div class="relative z-10 max-w-3xl">
           <div class="inline-flex items-center space-x-2 bg-amber-400/10 border border-amber-400/30 text-amber-300 text-xs px-3 py-1 rounded-full mb-3">
             <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
-            <span>Hybrid ORCID-Registry Verified + OpenAlex Abstract Retrieval + Groq 120B</span>
+            <span>Verified ORCID Registry + DOI Abstract Extraction + Groq 120B</span>
           </div>
           <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight">Evaluate Researcher Capacity for Thesis & Projects</h1>
           <p class="mt-2 text-slate-300 text-sm sm:text-base leading-relaxed">
-            Eliminates author-name collision and preprint contamination. We scrape canonical works straight from the official <strong>ORCID Registry</strong>, enrich DOIs with <strong>OpenAlex</strong> abstracts, and evaluate supervision readiness using <strong>openai/gpt-oss-120b</strong>.
+            Eliminates author name collision and preprint contamination. We extract verified publications from the official <strong>ORCID Registry</strong>, enrich DOIs with <strong>OpenAlex</strong> abstracts, reward <strong>individual research autonomy</strong>, and evaluate supervision readiness using <strong>openai/gpt-oss-120b</strong>.
           </p>
         </div>
       </div>
@@ -183,7 +183,7 @@
                   </button>
                 </div>
               </div>
-              <p class="text-[11px] text-slate-500">Client-side only. Stored safely in <code class="text-blue-700 bg-blue-50 px-1 rounded">localStorage</code>.</p>
+              <p class="text-[11px] text-slate-500">Direct client-to-Groq request. Saved locally in <code class="text-blue-700 bg-blue-50 px-1 rounded">localStorage</code>.</p>
             </div>
           </div>
 
@@ -224,7 +224,7 @@
           <div class="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
           <div>
             <h3 id="statusTitle" class="text-sm font-bold text-slate-800">Reading ORCID Registry...</h3>
-            <p id="statusDetail" class="text-xs text-slate-500">Querying pub.orcid.org for verified author record...</p>
+            <p id="statusDetail" class="text-xs text-slate-500">Querying pub.orcid.org for verified record...</p>
           </div>
         </div>
         <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
@@ -284,7 +284,7 @@
             <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100">
               <span class="text-[11px] font-semibold text-slate-500 uppercase">ORCID Works</span>
               <p id="metricWorks" class="text-xl font-bold font-mono text-slate-900 mt-1">0</p>
-              <span class="text-[10px] text-emerald-600 font-medium">Verified in ORCID</span>
+              <span class="text-[10px] text-emerald-600 font-medium">Verified Works</span>
             </div>
             <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100">
               <span class="text-[11px] font-semibold text-slate-500 uppercase">Peer-Reviewed</span>
@@ -309,7 +309,7 @@
             <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100">
               <span class="text-[11px] font-semibold text-slate-500 uppercase">Avg Co-Authors</span>
               <p id="metricAvgCoAuthors" class="text-xl font-bold font-mono text-slate-900 mt-1">0.0</p>
-              <span class="text-[10px] text-slate-400">Network Span</span>
+              <span class="text-[10px] text-emerald-600 font-medium">Autonomy: High if ≤3</span>
             </div>
           </div>
 
@@ -483,7 +483,7 @@
           <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Mathematical Specification</span>
           <h2 class="text-2xl font-extrabold text-slate-900 mt-1">The Research Capacity Index (RCI) Formula</h2>
           <p class="text-sm text-slate-500 mt-1">
-            The RCI is a calibrated metric between <strong>0.00 and 1.00</strong> combining peer-reviewed productivity, citation velocity, supervisory seniority, and AI semantic assessment.
+            The RCI is a calibrated metric between <strong>0.00 and 1.00</strong> combining peer-reviewed productivity, citation velocity, supervisory seniority, individual execution autonomy, and AI semantic assessment.
           </p>
         </div>
 
@@ -491,7 +491,7 @@
         <div class="bg-slate-900 text-white p-6 rounded-2xl font-mono text-sm sm:text-base space-y-3 overflow-x-auto shadow-inner">
           <p class="text-amber-400 text-xs font-bold uppercase font-sans tracking-wider">// Master RCI Formulation</p>
           <div class="py-2 border-y border-slate-800 text-emerald-400 font-bold whitespace-nowrap">
-            RCI = (0.22 · S_prod) + (0.23 · S_impact) + (0.18 · S_lead) + (0.12 · S_collab) + (0.15 · S_momentum) + (0.10 · S_align)
+            RCI = (0.22 · S_prod) + (0.23 · S_impact) + (0.18 · S_lead) + (0.12 · S_autonomy) + (0.15 · S_momentum) + (0.10 · S_align)
           </div>
           <p class="text-xs text-slate-400 font-sans">
             Where each sub-score <code class="text-amber-300">S_x</code> is strictly normalized between <code class="text-amber-300">[0.0, 1.0]</code>.
@@ -531,16 +531,23 @@
                   <td class="p-3 border border-slate-200">Last-authorship reflects senior supervision/laboratory directorship; first-authorship reflects hands-on craftsmanship.</td>
                 </tr>
                 <tr>
-                  <td class="p-3 border border-slate-200 font-bold text-slate-800">S_collab (Collaboration Span)</td>
+                  <td class="p-3 border border-slate-200 font-bold text-slate-800">S_autonomy (Individual Autonomy & Small-Team Focus)</td>
                   <td class="p-3 border border-slate-200 font-mono text-blue-600 font-bold">12%</td>
-                  <td class="p-3 border border-slate-200">Optimized between 2 to 7 co-authors; penalizes extreme hyper-authorship or isolated writing.</td>
-                  <td class="p-3 border border-slate-200">Supervisors with balanced co-authorship networks expose thesis students to broader research opportunities.</td>
+                  <td class="p-3 border border-slate-200">
+                    <strong>1.00</strong> for ≤3 authors (supreme hands-on capability); 
+                    <strong>0.88</strong> for 4–6 authors; 
+                    <strong>0.70</strong> for 7–10 authors; 
+                    <strong>0.50</strong> for >10 authors (hyper-authorship penalty).
+                  </td>
+                  <td class="p-3 border border-slate-200">
+                    <span class="text-emerald-700 font-semibold">Rewards individual capability:</span> A low author count indicates the researcher can handle the core work themselves rather than relying on massive author swarms, ensuring direct, capable guidance for students.
+                  </td>
                 </tr>
                 <tr>
                   <td class="p-3 border border-slate-200 font-bold text-slate-800">S_momentum (Recency)</td>
                   <td class="p-3 border border-slate-200 font-mono text-blue-600 font-bold">15%</td>
                   <td class="p-3 border border-slate-200">min(1, RecentWorks_3yr / 5)</td>
-                  <td class="p-3 border border-slate-200">Filters out dormant supervisors; ensures the researcher has active momentum and current project bandwidth.</td>
+                  <td class="p-3 border border-slate-200">Filters out dormant supervisors; ensures active momentum and current project bandwidth.</td>
                 </tr>
                 <tr>
                   <td class="p-3 border border-slate-200 font-bold text-slate-800">S_align (Societal & Trendy AI Score)</td>
@@ -632,7 +639,7 @@
     </div>
   </footer>
 
-  <!-- CORE LOGIC JAVASCRIPT: HYBRID ORCID + OPENALEX PIPELINE -->
+  <!-- CORE LOGIC JAVASCRIPT: STRICT ORCID-FIRST + AUTONOMY-BASED RCI PIPELINE -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       lucide.createIcons();
@@ -689,7 +696,7 @@
       return words.join(" ").replace(/\s+/g, " ").trim();
     }
 
-    // MAIN FORM HANDLER: STRICT ORCID-FIRST HYBRID ARCHITECTURE
+    // MAIN FORM HANDLER
     async function handleFormSubmit(e) {
       e.preventDefault();
       
@@ -736,8 +743,8 @@
         setLoading(true, "Synthesizing with Groq `openai/gpt-oss-120b` reasoning engine...", 85);
         const aiAnalysis = await queryGroqLLM(apiKey, orcidRecord, enrichedData);
 
-        // STEP 6: Compute Final RCI & Render
-        setLoading(true, "Computing RCI Score and building supervisor advisory report...", 95);
+        // STEP 6: Compute Final RCI with Autonomy Bonus & Render
+        setLoading(true, "Computing RCI Score with Research Autonomy metric...", 95);
         const rciResult = calculateRCI(enrichedData.metrics, aiAnalysis.societal_humanitarian_trendy_score);
 
         renderResults(orcidRecord, enrichedData, aiAnalysis, rciResult, orcid);
@@ -801,8 +808,6 @@
     // 3. Parse ORCID Works (Identify preprints vs peer-reviewed, extract DOIs)
     function parseOrcidWorks(groups) {
       const works = [];
-      const currentYear = new Date().getFullYear();
-
       for (const grp of groups) {
         const summary = grp["work-summary"]?.[0];
         if (!summary) continue;
@@ -819,7 +824,6 @@
         for (const ext of extIds) {
           if (ext["external-id-type"]?.toLowerCase() === "doi") {
             doi = ext["external-id-value"]?.trim();
-            // clean doi
             doi = doi.replace(/^https?:\/\/doi\.org\//i, "");
             break;
           }
@@ -864,15 +868,14 @@
       let openAlexFoundCount = 0;
       const discoveredVenues = [];
 
-      // Fetch abstracts and details for top 3 works
       for (const work of top3Works) {
         let abstract = null;
         let citations = 0;
-        let authorsCount = 2; // baseline estimation
+        let authorsCount = 2; // conservative baseline
         let authorPos = "first";
         let venue = work.journal || "Peer-Reviewed Venue";
 
-        // 1. Check if ORCID has short-description
+        // Check if ORCID has short-description
         if (work.putCode) {
           try {
             const orcidDetailRes = await fetch(`https://pub.orcid.org/v3.0/${orcid}/work/${work.putCode}`, {
@@ -889,7 +892,7 @@
           }
         }
 
-        // 2. If no abstract or to get citation & author position, query OpenAlex by exact DOI
+        // Query OpenAlex strictly by verified DOI
         if (work.doi) {
           try {
             const oaRes = await fetch(`https://api.openalex.org/works/https://doi.org/${encodeURIComponent(work.doi)}`);
@@ -911,7 +914,7 @@
               authorsCount = authorships.length;
               coAuthorSum += authorsCount;
 
-              // Check researcher's position
+              // Check researcher's authorship role
               const myAuth = authorships.find(a => 
                 (a.author?.orcid && a.author.orcid.includes(orcid)) || 
                 (a.author?.display_name && a.author.display_name.toLowerCase().includes(orcid))
@@ -949,14 +952,14 @@
         });
       }
 
-      // If OpenAlex provided citations for top works, project conservative estimate for full profile
+      // Project conservative citations for full profile
       let totalEstimatedCitations = totalCitationsFound;
       if (totalWorks > 3 && openAlexFoundCount > 0) {
         const avgFound = totalCitationsFound / openAlexFoundCount;
         totalEstimatedCitations = Math.round(avgFound * (peerReviewedCount || totalWorks));
       }
 
-      const avgCoAuthors = enrichedTop3.length > 0 ? (coAuthorSum / Math.max(1, openAlexFoundCount || 1)).toFixed(1) : "2.5";
+      const avgCoAuthors = enrichedTop3.length > 0 ? (coAuthorSum / Math.max(1, openAlexFoundCount || 1)).toFixed(1) : "2.0";
 
       return {
         top3Works: enrichedTop3,
@@ -975,7 +978,7 @@
       };
     }
 
-    // 5. Compute Mathematical RCI Formula
+    // 5. Compute Mathematical RCI Formula (WITH AUTONOMY BONUS)
     function calculateRCI(m, societalScore) {
       // S_prod: Weight peer-reviewed significantly higher than non-peer reviewed
       const sProd = (0.7 * Math.min(1, Math.log(1 + m.peerReviewedCount) / Math.log(1 + 70))) +
@@ -989,12 +992,19 @@
       // S_lead: Authorship positions (first-author lead vs supervisory last-author)
       const sLead = Math.min(1.0, ((m.firstAuthorCount * 1.0) + (m.lastAuthorCount * 1.25)) / Math.max(1, (m.firstAuthorCount + m.lastAuthorCount)));
 
-      // S_collab: Ideal team size 2 to 7 co-authors
-      let sCollab = 0.6;
-      if (m.avgCoAuthors >= 2 && m.avgCoAuthors <= 7) sCollab = 1.0;
-      else if (m.avgCoAuthors > 7 && m.avgCoAuthors <= 12) sCollab = 0.8;
-      else if (m.avgCoAuthors > 12) sCollab = 0.55;
-      else if (m.avgCoAuthors < 2) sCollab = 0.70;
+      // S_autonomy: Rewards low author count!
+      // Low author count (1 to 3 authors) proves the researcher handles the bulk of the core research, 
+      // coding, and conceptualization themselves. High author counts dilute responsibility.
+      let sAutonomy = 1.0;
+      if (m.avgCoAuthors <= 3.0) {
+        sAutonomy = 1.0;  // Supreme individual capability & self-sufficiency
+      } else if (m.avgCoAuthors <= 6.0) {
+        sAutonomy = 0.88; // Small focused collaborative team
+      } else if (m.avgCoAuthors <= 10.0) {
+        sAutonomy = 0.70; // Moderately dispersed group
+      } else {
+        sAutonomy = 0.50; // Diluted / hyper-authorship penalty (>10 authors)
+      }
 
       // S_momentum: 3-year publication velocity
       const sMomentum = Math.min(1.0, m.recentWorks3Yr / 5);
@@ -1006,7 +1016,7 @@
       const rawRci = (0.22 * sProd) + 
                      (0.23 * sImpact) + 
                      (0.18 * sLead) + 
-                     (0.12 * sCollab) + 
+                     (0.12 * sAutonomy) + 
                      (0.15 * sMomentum) + 
                      (0.10 * sAlign);
 
@@ -1047,7 +1057,7 @@
           productivity: { score: sProd, weight: 0.22, name: "Peer-Reviewed Productivity" },
           impact: { score: sImpact, weight: 0.23, name: "Citation Impact & Venues" },
           leadership: { score: sLead, weight: 0.18, name: "First/Last Authorship Lead" },
-          collaboration: { score: sCollab, weight: 0.12, name: "Collaboration Breadth" },
+          autonomy: { score: sAutonomy, weight: 0.12, name: "Research Autonomy (Low Author Bonus)" },
           momentum: { score: sMomentum, weight: 0.15, name: "3-Year Recency Momentum" },
           societal: { score: sAlign, weight: 0.10, name: "Societal & Trendy Alignment" }
         }
@@ -1057,7 +1067,7 @@
     // 6. Call Groq with openai/gpt-oss-120b
     async function queryGroqLLM(apiKey, record, enriched) {
       const top3Summary = enriched.top3Works.map((w, idx) => {
-        return `[Paper #${idx + 1}] Title: "${w.title}"\nYear: ${w.pubYear || "N/A"}\nVenue: ${w.venue}\nType: ${w.isPreprint ? "Preprint (Unrefereed)" : "Peer-Reviewed"}\nAbstract: ${w.abstract.slice(0, 900)}`;
+        return `[Paper #${idx + 1}] Title: "${w.title}"\nYear: ${w.pubYear || "N/A"}\nVenue: ${w.venue}\nType: ${w.isPreprint ? "Preprint (Unrefereed)" : "Peer-Reviewed"}\nAuthors on paper: ${w.authorsCount}\nAbstract: ${w.abstract.slice(0, 900)}`;
       }).join("\n\n");
 
       const prompt = `You are the BracU Research Capacity Index (BRCI) Evaluation System.
@@ -1067,6 +1077,7 @@ RESEARCHER VERIFIED ORCID PROFILE:
 - Name: ${record.fullName}
 - Affiliation: ${record.affiliation}
 - Total Verified Works: ${enriched.metrics.totalWorks} (Peer-Reviewed: ${enriched.metrics.peerReviewedCount}, Preprints: ${enriched.metrics.preprintCount})
+- Average Authors Per Paper: ${enriched.metrics.avgCoAuthors} (Note: Low author count ≤3 indicates the researcher can handle the core work themselves with high individual autonomy, which is very advantageous for closely mentoring students)
 - Key Venues: ${enriched.metrics.venues.join(", ") || "International Journals"}
 - Sample Titles from ORCID:
 ${enriched.metrics.paperTitles.map(t => `• ${t}`).join("\n")}
@@ -1077,13 +1088,13 @@ ${top3Summary}
 Respond ONLY in valid JSON with this exact schema:
 {
   "societal_humanitarian_trendy_score": 0.85,
-  "societal_alignment_rationale": "Evaluation of how this research aligns with societal/humanitarian challenges (SDGs, healthcare, sustainability) or modern trending frontiers.",
+  "societal_alignment_rationale": "Evaluation of how this research aligns with societal/humanitarian challenges (SDGs, healthcare, sustainability, Bangladesh local development) or modern trending frontiers.",
   "primary_research_interests": ["Topic 1", "Topic 2", "Topic 3", "Topic 4"],
-  "researcher_ability_analysis": "Assessment of the researcher's analytical rigor, venue quality, and technical depth.",
+  "researcher_ability_analysis": "Assessment of the researcher's analytical rigor, self-reliance (handling work in low author counts), venue quality, and technical depth.",
   "uniqueness_and_methodology": "What makes their methodology distinct and innovative.",
-  "research_maturity_and_supervision_fit": "Assessment of their readiness to supervise undergraduate or postgraduate thesis students.",
+  "research_maturity_and_supervision_fit": "Assessment of their readiness to supervise undergraduate or postgraduate thesis students, highlighting their personal hands-on capability.",
   "recommended_student_fit": "Specific student profile that would thrive under this researcher.",
-  "overall_executive_summary": "Crisp 3-4 sentence synthesis of their capacity index and mentorship profile."
+  "overall_executive_summary": "Crisp 3-4 sentence synthesis of their capacity index, execution autonomy, and mentorship profile."
 }`;
 
       const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -1188,6 +1199,7 @@ Respond ONLY in valid JSON with this exact schema:
               <span>${work.venue}</span>
             </span>
             ${work.isPreprint ? `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-1.5 py-0.5 rounded">Preprint</span>` : `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-1.5 py-0.5 rounded">Peer-Reviewed</span>`}
+            <span>• Authors: <strong class="text-slate-800">${work.authorsCount}</strong></span>
             ${work.citations ? `<span>• Citations: <strong class="text-slate-800">${work.citations}</strong></span>` : ""}
             ${work.doi ? `<a href="https://doi.org/${work.doi}" target="_blank" class="text-blue-600 hover:underline font-mono text-[11px]">DOI ↗</a>` : ""}
           </div>
