@@ -1,468 +1,574 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RCI Methodology & Mathematical Formulation — BracU RCI</title>
+  <meta name="description" content="Detailed mathematical specification, bibliometric weighting, and scoring rationale of the BracU Research Capacity Index (BRCI).">
   
-  <!-- Primary Meta Tags -->
-  <title>Research Capability Index (RCI) Methodology | Epoch One (E1), BRAC University</title>
-  <meta name="title" content="Research Capability Index (RCI) Methodology | Epoch One (E1), BRAC University" />
-  <meta name="description" content="A transparent, reproducible, and multidimensional researcher capability framework grounded in DORA, the Leiden Manifesto, and the Hong Kong Principles. Developed by Epoch One (E1), BRAC University." />
-  <meta name="keywords" content="Research Capability Index, RCI, BRAC University, Epoch One, E1, DORA, Leiden Manifesto, Hong Kong Principles, Research Evaluation, Academic Assessment, Bibliometrics, OpenAlex, ORCID" />
-  <meta name="author" content="Epoch One (E1), BRAC University" />
-  <meta name="robots" content="index, follow" />
-
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://e1research.github.io/BracU-RCI/methodology.html" />
-  <meta property="og:title" content="Research Capability Index (RCI): A Responsible Academic Assessment Framework" />
-  <meta property="og:description" content="A multidimensional researcher evaluation formula evaluating output, independence, annualized velocity, novelty, societal well-being, and technical rigor." />
-  
-  <!-- Academic Citation Metadata for Google Scholar -->
-  <meta name="citation_title" content="Research Capability Index (RCI): A Responsible, Multi-Dimensional Researcher Evaluation Framework" />
-  <meta name="citation_author" content="Epoch One (E1) Research Group" />
-  <meta name="citation_publication_date" content="2026/09/14" />
-  <meta name="citation_technical_report_institution" content="BRAC University" />
-  <meta name="citation_language" content="en" />
-  <meta name="citation_fulltext_html_url" content="https://e1research.github.io/BracU-RCI/methodology.html" />
-
-  <!-- JSON-LD Structured Data for Google Search Rich Snippets -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "ScholarlyArticle",
-    "headline": "Research Capability Index (RCI): A Responsible Academic Evaluation Framework for BRAC University",
-    "description": "A comprehensive whitepaper outlining the motivation, mathematics, and algorithmic implementation of the Research Capability Index (RCI).",
-    "author": {
-      "@type": "Organization",
-      "name": "Epoch One (E1) Research Group",
-      "affiliation": {
-        "@type": "EducationalOrganization",
-        "name": "BRAC University",
-        "url": "https://www.bracu.ac.bd/"
-      }
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "Epoch One (E1), BRAC University"
-    },
-    "datePublished": "2026-09-14",
-    "isAccessibleForFree": true,
-    "url": "https://e1research.github.io/BracU-RCI/methodology.html",
-    "about": [
-      {"@type": "Thing", "name": "San Francisco Declaration on Research Assessment (DORA)"},
-      {"@type": "Thing", "name": "Leiden Manifesto"},
-      {"@type": "Thing", "name": "Hong Kong Principles"}
-    ]
-  }
-  </script>
-
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Inter & JetBrains Mono Fonts -->
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <script>
     tailwind.config = {
       theme: {
         extend: {
           fontFamily: {
             sans: ['Inter', 'sans-serif'],
-            serif: ['Newsreader', 'Georgia', 'serif'],
             mono: ['JetBrains Mono', 'monospace'],
           },
           colors: {
-            brand: {
-              50: '#f0f4fe',
-              100: '#dde6fc',
-              500: '#3352ec',
-              600: '#1d3ee5',
-              700: '#1530be',
-              900: '#0f1f7a',
+            bracu: {
+              navy: '#0b2545',
+              dark: '#134074',
+              blue: '#0056b3',
+              gold: '#e0a96d',
+              light: '#eef4f8',
             }
           }
         }
       }
     }
   </script>
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white !important; color: black !important; }
+    }
+  </style>
 </head>
-<body class="bg-slate-950 text-slate-200 min-h-screen font-sans antialiased selection:bg-brand-500 selection:text-white">
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col font-sans antialiased">
 
-  <!-- ==================== TOP NAVIGATION ==================== -->
-  <header class="border-b border-slate-800/80 bg-slate-900/70 backdrop-blur-md sticky top-0 z-50">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="h-8 w-8 rounded-lg bg-gradient-to-br from-brand-500 to-indigo-700 flex items-center justify-center font-bold text-white text-sm shadow-md shadow-brand-500/20">
-          E1
-        </div>
-        <div>
-          <span class="text-sm font-bold text-white tracking-tight">Epoch One • BRAC University</span>
-          <span class="hidden sm:inline-block text-xs text-slate-400 ml-2 border-l border-slate-700 pl-2">RCI Framework Whitepaper</span>
-        </div>
-      </div>
-      <div>
-        <a href="./index.html" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs transition shadow-lg shadow-brand-600/25 active:scale-[0.98]">
-          <span>🚀 Launch Evaluator</span>
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+  <!-- TOP NAVIGATION HEADER -->
+  <header class="bg-bracu-navy text-white shadow-lg sticky top-0 z-50 border-b border-blue-900/60 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo & Title -->
+        <a href="index.html" class="flex items-center space-x-3 cursor-pointer">
+          <div class="w-10 h-10 rounded-lg bg-gradient-to-tr from-amber-500 to-blue-500 flex items-center justify-center font-bold text-xl shadow-md text-white">
+            <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="font-extrabold tracking-tight text-lg text-white">BracU <span class="text-amber-400">RCI</span></span>
+              <span class="text-[10px] uppercase font-semibold bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30">Formula Spec</span>
+            </div>
+            <p class="text-xs text-blue-200 hidden sm:block">Research Capacity Index • Mathematical Methodology</p>
+          </div>
         </a>
+
+        <!-- Navigation Tabs -->
+        <nav class="flex space-x-1 sm:space-x-2">
+          <a href="index.html" class="px-3 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-blue-900/40 flex items-center space-x-1.5 transition">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+            <span class="hidden md:inline">Evaluator</span>
+          </a>
+          <a href="index.html#guideline" class="px-3 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-blue-900/40 flex items-center space-x-1.5 transition">
+            <i data-lucide="book-open" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">User Guideline</span>
+          </a>
+          <a href="methodology.html" class="px-3 py-2 text-sm font-medium rounded-md text-white bg-blue-900/80 shadow-sm flex items-center space-x-1.5">
+            <i data-lucide="calculator" class="w-4 h-4"></i>
+            <span>RCI Formula</span>
+          </a>
+          <a href="index.html#about" class="px-3 py-2 text-sm font-medium rounded-md text-slate-300 hover:text-white hover:bg-blue-900/40 flex items-center space-x-1.5 transition">
+            <i data-lucide="info" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">About</span>
+          </a>
+        </nav>
       </div>
     </div>
   </header>
 
-  <!-- ==================== HERO / ARTICLE HEADER ==================== -->
-  <div class="border-b border-slate-800/60 bg-gradient-to-b from-slate-900/40 via-slate-950 to-slate-950 py-14 px-4 sm:px-6">
-    <div class="max-w-4xl mx-auto space-y-6">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/25 text-brand-300 text-xs font-semibold">
-        <span>📄 Academic Specification &amp; Evaluation Policy</span>
-      </div>
+  <!-- MAIN CONTAINER -->
+  <main class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
-      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
-        Research Capability Index (RCI): A Responsible Academic Assessment Framework
-      </h1>
-
-      <p class="text-base sm:text-lg text-slate-400 font-serif leading-relaxed italic">
-        Moving beyond raw publication counts and journal prestige toward a multi-dimensional, transparent assessment of scientific contribution, authorship independence, and societal utility.
-      </p>
-
-      <div class="pt-4 flex flex-wrap items-center gap-y-2 gap-x-6 text-xs text-slate-400 border-t border-slate-800/80">
-        <div><strong class="text-slate-300">Initiative:</strong> Epoch One (E1) Research Group</div>
-        <div><strong class="text-slate-300">Institution:</strong> BRAC University</div>
-        <div><strong class="text-slate-300">Published:</strong> September 2026</div>
-        <div><strong class="text-slate-300">Scale:</strong> 0.00 – 4.00 (CGPA Scale)</div>
+    <!-- HERO HEADER -->
+    <div class="bg-gradient-to-r from-bracu-navy via-slate-900 to-bracu-dark rounded-2xl p-6 sm:p-10 text-white shadow-xl relative overflow-hidden">
+      <div class="absolute -right-10 -bottom-10 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="relative z-10 max-w-3xl space-y-3">
+        <div class="inline-flex items-center space-x-2 bg-amber-400/10 border border-amber-400/30 text-amber-300 text-xs px-3 py-1 rounded-full">
+          <i data-lucide="binary" class="w-3.5 h-3.5"></i>
+          <span>Calibrated Multi-Criteria Decision Analysis (MCDA)</span>
+        </div>
+        <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight">
+          Research Capacity Index (RCI) Specification
+        </h1>
+        <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+          The Research Capacity Index (RCI) is a standardized scalar metric bounded between <strong class="text-white font-mono">[0.00, 1.00]</strong>. It combines verified bibliometric indices, authorship seniority roles, and semantic LLM alignment to help students identify suitable thesis supervisors and research collaborators.
+        </p>
       </div>
     </div>
-  </div>
 
-  <!-- ==================== MAIN CONTENT ==================== -->
-  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-12 space-y-16">
+    <!-- SECTION 1: MASTER EQUATION -->
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600 font-mono">Formal Formulation</span>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">The Master Equation</h2>
+        </div>
+        <button onclick="window.print()" class="no-print inline-flex items-center space-x-1.5 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition">
+          <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+          <span>Print Spec</span>
+        </button>
+      </div>
 
-    <!-- Executive Summary / Abstract -->
-    <section class="bg-slate-900/60 rounded-2xl p-6 sm:p-8 border border-slate-800 space-y-4">
-      <h2 class="text-xs font-bold uppercase tracking-wider text-brand-400 font-mono">Executive Summary</h2>
-      <p class="text-sm sm:text-base text-slate-300 leading-relaxed font-serif">
-        Traditional researcher performance metrics—such as raw publication quantity, Journal Impact Factors (JIF), and cumulative citation indices (e.g., the h-index)—fail to capture demonstrated research capability. They reward hyper-prolific publication at the expense of substantive novelty, penalize junior researchers whose work has not had time to accrue legacy citations, and obscure individual authorship contribution. The <strong>Research Capability Index (RCI)</strong> is a transparent, reproducible, and multidimensional composite index designed for <strong>BRAC University</strong> researchers. RCI combines quantitative bibliometric velocity with deep qualitative AI appraisal grounded in the <em>San Francisco Declaration on Research Assessment (DORA)</em>, the <em>Leiden Manifesto for Research Metrics</em>, and the <em>Hong Kong Principles for Fostering Research Integrity</em>.
-      </p>
-    </section>
-
-    <!-- Table of Contents -->
-    <nav class="p-5 bg-slate-950 rounded-xl border border-slate-800/80 space-y-3">
-      <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Contents</div>
-      <ol class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-300 font-mono">
-        <li><a href="#motivation" class="hover:text-brand-400 transition">1. Motivation &amp; Guiding Principles</a></li>
-        <li><a href="#architecture" class="hover:text-brand-400 transition">2. Dimensional Architecture ($M_1 - M_7$)</a></li>
-        <li><a href="#mathematics" class="hover:text-brand-400 transition">3. Mathematical Formulations</a></li>
-        <li><a href="#bonus-engine" class="hover:text-brand-400 transition">4. The Excellence Incentive Engine</a></li>
-        <li><a href="#orcid-integrity" class="hover:text-brand-400 transition">5. Data Integrity &amp; ORCID Disambiguation</a></li>
-        <li><a href="#references" class="hover:text-brand-400 transition">6. Foundational Literature &amp; References</a></li>
-      </ol>
-    </nav>
-
-    <!-- SECTION 1: MOTIVATION -->
-    <section id="motivation" class="space-y-4">
-      <h2 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
-        <span class="text-brand-400 font-mono text-lg">01.</span>
-        Motivation &amp; Theoretical Grounding
-      </h2>
-      <div class="text-sm leading-relaxed text-slate-300 space-y-4 font-serif">
-        <p>
-          For decades, university promotion committees and grant panels have relied on proxy indicators of quality—most notoriously, journal-level metrics like the Journal Impact Factor (JIF). As documented extensively by Seglen (1997) and Waltman (2016), citation distributions within any journal are heavily skewed: a tiny fraction of papers drive the majority of a journal's impact factor, rendering the journal's name an unscientific proxy for an individual article's quality.
+      <!-- EQUATION BANNER -->
+      <div class="bg-slate-900 text-white p-6 rounded-2xl font-mono space-y-3 overflow-x-auto shadow-inner">
+        <p class="text-amber-400 text-xs font-bold uppercase font-sans tracking-wider">// RCI Objective Function</p>
+        <div class="py-3 border-y border-slate-800 text-emerald-400 text-base sm:text-lg font-bold whitespace-nowrap">
+          RCI = (0.22 · S_prod) + (0.23 · S_impact) + (0.18 · S_lead) + (0.12 · S_collab) + (0.15 · S_momentum) + (0.10 · S_align)
+        </div>
+        <p class="text-xs text-slate-400 font-sans leading-relaxed">
+          Where every sub-component <code class="text-amber-300 font-mono">S_x ∈ [0.00, 1.00]</code>, guaranteeing that the terminal index satisfies <code class="text-amber-300 font-mono">0.00 ≤ RCI ≤ 1.00</code>.
         </p>
-        <p>
-          To rectify systemic flaws in academic evaluation, the RCI framework operationalizes three foundational declarations of responsible research assessment:
-        </p>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 font-sans">
-          <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-2">
-            <div class="text-brand-400 font-bold text-xs">DORA (2012)</div>
-            <p class="text-xs text-slate-400">Eliminates journal venue prestige as a surrogate for quality; assesses scientific value based on substantive content and methodological innovation.</p>
-          </div>
-          <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-2">
-            <div class="text-indigo-400 font-bold text-xs">Leiden Manifesto (2015)</div>
-            <p class="text-xs text-slate-400">Mandates quantitative metrics to support, not supplant, qualitative expert evaluation; demands transparency and account for field differences.</p>
-          </div>
-          <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-2">
-            <div class="text-sky-400 font-bold text-xs">Hong Kong Principles (2020)</div>
-            <p class="text-xs text-slate-400">Rewards open research practices, rigorous replication, transparent reporting, and societal well-being over raw publication volume.</p>
-          </div>
+      </div>
+
+      <!-- COMPONENT WEIGHT VISUALIZATION BAR -->
+      <div class="space-y-2 pt-2">
+        <span class="text-xs font-bold uppercase tracking-wider text-slate-600 block">Relative Weight Distribution</span>
+        <div class="w-full h-4 rounded-full overflow-hidden flex shadow-inner bg-slate-100 text-[10px] font-mono text-white font-bold">
+          <div style="width: 22%" class="bg-blue-600 flex items-center justify-center" title="S_prod: 22%">22%</div>
+          <div style="width: 23%" class="bg-indigo-600 flex items-center justify-center" title="S_impact: 23%">23%</div>
+          <div style="width: 18%" class="bg-purple-600 flex items-center justify-center" title="S_lead: 18%">18%</div>
+          <div style="width: 12%" class="bg-amber-600 flex items-center justify-center" title="S_collab: 12%">12%</div>
+          <div style="width: 15%" class="bg-teal-600 flex items-center justify-center" title="S_momentum: 15%">15%</div>
+          <div style="width: 10%" class="bg-rose-600 flex items-center justify-center" title="S_align: 10%">10%</div>
+        </div>
+        <div class="flex flex-wrap items-center justify-between text-[11px] text-slate-500 pt-1">
+          <span class="inline-flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block mr-1"></span>Productivity (22%)</span>
+          <span class="inline-flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-indigo-600 inline-block mr-1"></span>Impact (23%)</span>
+          <span class="inline-flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-purple-600 inline-block mr-1"></span>Leadership (18%)</span>
+          <span class="inline-flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-amber-600 inline-block mr-1"></span>Collaboration (12%)</span>
+          <span class="inline-flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-teal-600 inline-block mr-1"></span>Momentum (15%)</span>
+          <span class="inline-flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-rose-600 inline-block mr-1"></span>AI Alignment (10%)</span>
         </div>
       </div>
     </section>
 
-    <!-- SECTION 2: DIMENSIONAL ARCHITECTURE -->
-    <section id="architecture" class="space-y-4">
-      <h2 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
-        <span class="text-brand-400 font-mono text-lg">02.</span>
-        Dimensional Submetric Architecture
-      </h2>
-      <p class="text-sm text-slate-300 leading-relaxed font-serif">
-        The RCI composite index aggregates seven orthogonal submetrics ($M_1$ through $M_7$), balancing quantitative bibliometrics with automated qualitative AI assessment:
-      </p>
-
-      <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/40">
-        <table class="w-full text-left text-xs border-collapse">
-          <thead>
-            <tr class="border-b border-slate-800 bg-slate-900 text-slate-400 font-mono uppercase text-[10px]">
-              <th class="py-3 px-4">Metric</th>
-              <th class="py-3 px-4">Evaluation Dimension</th>
-              <th class="py-3 px-4">Assessment Method</th>
-              <th class="py-3 px-4 text-right">Weight</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-800/60 text-slate-300 font-sans">
-            <tr>
-              <td class="py-3 px-4 font-mono font-bold text-white">M1</td>
-              <td class="py-3 px-4 font-medium">Peer-Reviewed Journal Output</td>
-              <td class="py-3 px-4 text-slate-400">Sigmoid saturation of journal articles</td>
-              <td class="py-3 px-4 text-right font-mono font-bold text-brand-400">15%</td>
-            </tr>
-            <tr>
-              <td class="py-3 px-4 font-mono font-bold text-white">M2</td>
-              <td class="py-3 px-4 font-medium">First-Author Ratio</td>
-              <td class="py-3 px-4 text-slate-400">Direct technical execution &amp; intellectual independence</td>
-              <td class="py-3 px-4 text-right font-mono font-bold text-brand-400">15%</td>
-            </tr>
-            <tr>
-              <td class="py-3 px-4 font-mono font-bold text-white">M3</td>
-              <td class="py-3 px-4 font-medium">Last-Author Ratio</td>
-              <td class="py-3 px-4 text-slate-400">Senior supervision, mentoring &amp; lab leadership</td>
-              <td class="py-3 px-4 text-right font-mono font-bold text-brand-400">10%</td>
-            </tr>
-            <tr>
-              <td class="py-3 px-4 font-mono font-bold text-white">M4</td>
-              <td class="py-3 px-4 font-medium">Annualized Citation Velocity</td>
-              <td class="py-3 px-4 text-slate-400">Annualized citations normalized over career span</td>
-              <td class="py-3 px-4 text-right font-mono font-bold text-brand-400">10%</td>
-            </tr>
-            <tr>
-              <td class="py-3 px-4 font-mono font-bold text-white">M5</td>
-              <td class="py-3 px-4 font-medium">Originality &amp; Novelty</td>
-              <td class="py-3 px-4 text-emerald-400">LLM qualitative analysis of substantive problem framing</td>
-              <td class="py-3 px-4 text-right font-mono font-bold text-brand-400">20%</td>
-            </tr>
-            <tr>
-              <td class="py-3 px-4 font-mono font-bold text-white">M6</td>
-              <td class="py-3 px-4 font-medium">Human Usefulness &amp; Societal Relevance</td>
-              <td class="py-3 px-4 text-amber-400">LLM evaluation of real-world public/clinical utility</td>
-              <td class="py-3 px-4 text-right font-mono font-bold text-brand-400">10%</td>
-            </tr>
-            <tr>
-              <td class="py-3 px-4 font-mono font-bold text-white">M7</td>
-              <td class="py-3 px-4 font-medium">Technical Competency &amp; Rigor</td>
-              <td class="py-3 px-4 text-purple-400">LLM assessment of validation, data, &amp; reproducibility</td>
-              <td class="py-3 px-4 text-right font-mono font-bold text-brand-400">20%</td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr class="border-t border-slate-700 bg-slate-900/80 font-mono text-xs text-white font-bold">
-              <td colspan="3" class="py-3 px-4">Total Weight Sum</td>
-              <td class="py-3 px-4 text-right text-brand-400">100%</td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    </section>
-
-    <!-- SECTION 3: MATHEMATICAL FORMULATIONS -->
-    <section id="mathematics" class="space-y-6">
-      <h2 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
-        <span class="text-brand-400 font-mono text-lg">03.</span>
-        Mathematical Formulations
-      </h2>
-
-      <!-- M1 Breakdown -->
-      <div class="space-y-2 bg-slate-900/60 p-5 rounded-xl border border-slate-800">
-        <h3 class="text-base font-bold text-white flex items-center justify-between">
-          <span>M1: Peer-Reviewed Journal Output</span>
-          <span class="text-xs font-mono text-slate-400">Weight: 15%</span>
-        </h3>
-        <p class="text-xs text-slate-300 font-serif leading-relaxed">
-          To prevent hyper-prolific publishing from artificially dominating the index (and because higher publication volume already correlates with higher citation velocity in $M_4$), $M_1$ applies a standard sigmoid activation function:
-        </p>
-        <div class="p-3 bg-slate-950 rounded-lg font-mono text-xs text-brand-300 border border-slate-800/80 text-center">
-          M_1 = \sigma(N) = \frac{1}{1 + e^{-N}}
-        </div>
-        <p class="text-[11px] text-slate-400 italic">
-          where $N$ is the total count of peer-reviewed journal articles (indexed under OpenAlex <code>type: article</code>).
-        </p>
+    <!-- SECTION 2: COMPONENT DEEP DIVE -->
+    <section class="space-y-6">
+      <div class="border-b border-slate-200 pb-2">
+        <span class="text-xs font-bold uppercase tracking-wider text-blue-600 font-mono">Mathematical Dissection</span>
+        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">Component Equations & Rationale</h2>
       </div>
 
-      <!-- M2 and M3 Breakdown -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="space-y-2 bg-slate-900/60 p-5 rounded-xl border border-slate-800">
-          <h3 class="text-base font-bold text-white flex items-center justify-between">
-            <span>M2: First-Author Ratio</span>
-            <span class="text-xs font-mono text-slate-400">15%</span>
-          </h3>
-          <p class="text-xs text-slate-300 font-serif leading-relaxed">
-            Captures lead execution, hands-on empirical work, and authorship independence (Tscharntke et al., 2007):
+      <div class="grid grid-cols-1 gap-6">
+
+        <!-- S_prod -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <span class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-sm font-mono">01</span>
+              <h3 class="text-lg font-bold text-slate-900">S_prod — Peer-Reviewed Productivity (Weight: 22%)</h3>
+            </div>
+            <span class="font-mono text-xs font-bold bg-blue-50 text-blue-700 px-2.5 py-1 rounded border border-blue-200">w₁ = 0.22</span>
+          </div>
+
+          <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 font-mono text-xs text-slate-800">
+            S_prod = 0.70 · [ ln(1 + W_peer) / ln(1 + 70) ] + 0.30 · [ ln(1 + W_total) / ln(1 + 100) ]
+          </div>
+
+          <p class="text-xs text-slate-600 leading-relaxed">
+            <strong class="text-slate-800">Variables:</strong> <code class="bg-slate-100 px-1 py-0.5 rounded">W_peer</code> = Verified peer-reviewed works (indexed journals & refereed proceedings in ORCID); <code class="bg-slate-100 px-1 py-0.5 rounded">W_total</code> = Total works including preprints, books, and patents.
           </p>
-          <div class="p-3 bg-slate-950 rounded-lg font-mono text-xs text-indigo-300 border border-slate-800/80 text-center">
-            M_2 = \frac{N_{\text{first\_author}}}{N}
+          <div class="bg-blue-50/60 p-3 rounded-lg border border-blue-100 text-xs text-blue-950">
+            <strong>Why it matters for students:</strong> Differentiates between peer-reviewed articles vetted by external reviewers and unrefereed preprints. Logarithmic damping (<code class="font-mono">ln</code>) prevents researchers with 200+ micro-publications from skewing the metric, rewarding steady, substantial publishing volume.
           </div>
         </div>
 
-        <div class="space-y-2 bg-slate-900/60 p-5 rounded-xl border border-slate-800">
-          <h3 class="text-base font-bold text-white flex items-center justify-between">
-            <span>M3: Last-Author Ratio</span>
-            <span class="text-xs font-mono text-slate-400">10%</span>
-          </h3>
-          <p class="text-xs text-slate-300 font-serif leading-relaxed">
-            Captures senior supervision, intellectual steering, and principal investigator mentoring role:
+        <!-- S_impact -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <span class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm font-mono">02</span>
+              <h3 class="text-lg font-bold text-slate-900">S_impact — Global Citation Impact & Venues (Weight: 23%)</h3>
+            </div>
+            <span class="font-mono text-xs font-bold bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded border border-indigo-200">w₂ = 0.23</span>
+          </div>
+
+          <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 font-mono text-xs text-slate-800">
+            S_impact = 0.70 · min(1, [ ln(1 + C_total) / ln(1 + 2000) ]) + 0.30 · min(1, [ (C_total / max(1, W_total)) / 30 ])
+          </div>
+
+          <p class="text-xs text-slate-600 leading-relaxed">
+            <strong class="text-slate-800">Variables:</strong> <code class="bg-slate-100 px-1 py-0.5 rounded">C_total</code> = Cumulative global citations resolved via DOI metadata; <code class="bg-slate-100 px-1 py-0.5 rounded">C_total / W_total</code> = Mean citations per work (normalized against a benchmark of 30 citations/paper).
           </p>
-          <div class="p-3 bg-slate-950 rounded-lg font-mono text-xs text-sky-300 border border-slate-800/80 text-center">
-            M_3 = \frac{N_{\text{last\_author}}}{N}
+          <div class="bg-indigo-50/60 p-3 rounded-lg border border-indigo-100 text-xs text-indigo-950">
+            <strong>Why it matters for students:</strong> High cumulative citations prove that the academic community actively builds upon this researcher's findings. The secondary term (citations-per-paper) protects against "citation inflation" caused by sheer volume without individual paper depth.
           </div>
         </div>
-      </div>
 
-      <!-- M4 Breakdown -->
-      <div class="space-y-2 bg-slate-900/60 p-5 rounded-xl border border-slate-800">
-        <h3 class="text-base font-bold text-white flex items-center justify-between">
-          <span>M4: Annualized Citation Velocity</span>
-          <span class="text-xs font-mono text-slate-400">Weight: 10%</span>
-        </h3>
-        <p class="text-xs text-slate-300 font-serif leading-relaxed">
-          Raw citation counts unfairly bias senior researchers over early-career scholars. $M_4$ first calculates the annualized citation rate over the active publication career span, then normalizes the unbounded rate to $[0, 1]$ using a soft-saturation curve ($k = 15$):
-        </p>
-        <div class="p-3 bg-slate-950 rounded-lg font-mono text-xs text-teal-300 border border-slate-800/80 space-y-1 text-center">
-          <div>\text{CPY} = \frac{C_{\text{total}}}{\max(1, \; Y_{\text{recent}} - Y_{\text{oldest}})}</div>
-          <div class="pt-1">M_4 = \frac{\text{CPY}}{\text{CPY} + 15}</div>
-        </div>
-      </div>
+        <!-- S_lead -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <span class="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-sm font-mono">03</span>
+              <h3 class="text-lg font-bold text-slate-900">S_lead — Leadership & Authorship Position (Weight: 18%)</h3>
+            </div>
+            <span class="font-mono text-xs font-bold bg-purple-50 text-purple-700 px-2.5 py-1 rounded border border-purple-200">w₃ = 0.18</span>
+          </div>
 
-      <!-- M5 to M7 Breakdown -->
-      <div class="space-y-3 bg-slate-900/60 p-5 rounded-xl border border-slate-800">
-        <h3 class="text-base font-bold text-white flex items-center justify-between">
-          <span>M5–M7: Qualitative Assessment via Calibrated AI</span>
-          <span class="text-xs font-mono text-slate-400">Total Weight: 50%</span>
-        </h3>
-        <p class="text-xs text-slate-300 font-serif leading-relaxed">
-          Rather than assuming venue prestige dictates quality, the system passes abstracts and titles of the author's latest 5% papers ($\max(1, \lfloor 0.05 \times N \rfloor)$) to a large language model (Groq <code>openai/gpt-oss-120b</code>) prompted under DORA and Leiden guidelines.
-        </p>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1 text-xs">
-          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
-            <span class="font-bold text-emerald-400 block mb-1">M5: Novelty (20%)</span>
-            <p class="text-slate-400 text-[11px]">Evaluates substantive conceptual framing, new algorithms, or novel problem formulations.</p>
+          <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 font-mono text-xs text-slate-800">
+            S_lead = min(1.0, [ (1.00 · N_first) + (1.25 · N_last) ] / max(1, N_first + N_last))
           </div>
-          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
-            <span class="font-bold text-amber-400 block mb-1">M6: Societal Impact (10%)</span>
-            <p class="text-slate-400 text-[11px]">Evaluates practical utility, alignment with public well-being, sustainability, and real-world deployment.</p>
-          </div>
-          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
-            <span class="font-bold text-purple-400 block mb-1">M7: Technical Rigor (20%)</span>
-            <p class="text-slate-400 text-[11px]">Evaluates experimental discipline, statistical validation, and reproducible methodology.</p>
-          </div>
-        </div>
-        <p class="text-[11px] text-slate-400 italic">
-          *Calibration Rule:* Solid academic papers are scored generously in the $0.70 - 1.00$ band; scores fall below $0.70$ only if the contribution is clearly incremental, derivative, or trivially minor.
-        </p>
-      </div>
-    </section>
 
-    <!-- SECTION 4: BONUS ENGINE -->
-    <section id="bonus-engine" class="space-y-4">
-      <h2 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
-        <span class="text-brand-400 font-mono text-lg">04.</span>
-        The Excellence Incentive (Bonus Engine)
-      </h2>
-      <div class="text-sm text-slate-300 font-serif leading-relaxed space-y-4">
-        <p>
-          To reward researchers demonstrating mastery across individual dimensions, the RCI framework features a <strong>High-Performance Bonus Engine</strong>.
-        </p>
-        <div class="bg-slate-900/80 p-5 rounded-xl border border-slate-800 space-y-3 font-sans text-xs">
-          <div class="font-bold text-white flex items-center gap-2">
-            <span>⭐ Bonus Rule:</span>
-            <span class="text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded font-mono">+0.05 per submetric where $M_i > 0.80$</span>
-          </div>
-          <p class="text-slate-300 leading-relaxed">
-            1. First, calculate base normalized score:
-            <span class="font-mono text-brand-300 block my-1">R_{\text{raw}} = \sum_{i=1}^7 w_i M_i</span>
-            2. Compute bonus addition:
-            <span class="font-mono text-brand-300 block my-1">\text{Bonus} = 0.05 \times \sum_{i=1}^7 \mathbf{1}(M_i > 0.80)</span>
-            3. Apply bonus and cap at 1.0:
-            <span class="font-mono text-brand-300 block my-1">R_{0 \dots 1} = \min\left(1.0, \; R_{\text{raw}} + \text{Bonus}\right)</span>
-            4. Scale to university 4.00 CGPA standard:
-            <span class="font-mono text-brand-300 block my-1">\mathbf{RCI} = 4.0 \times R_{0 \dots 1}</span>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            <strong class="text-slate-800">Variables:</strong> <code class="bg-slate-100 px-1 py-0.5 rounded">N_first</code> = First-author publications (hands-on technical lead); <code class="bg-slate-100 px-1 py-0.5 rounded">N_last</code> = Last-author publications (senior supervisory, laboratory head, or principal investigator).
           </p>
+          <div class="bg-purple-50/60 p-3 rounded-lg border border-purple-100 text-xs text-purple-950">
+            <strong>Why it matters for students:</strong> In computing and sciences, the <em>last author</em> is traditionally the senior professor who conceptualized and guided the study, while the <em>first author</em> executed the core experimentation. High last-authorship indicates active mentorship and laboratory capacity to guide thesis students.
+          </div>
+        </div>
+
+        <!-- S_collab -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <span class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-sm font-mono">04</span>
+              <h3 class="text-lg font-bold text-slate-900">S_collab — Collaboration Breadth (Weight: 12%)</h3>
+            </div>
+            <span class="font-mono text-xs font-bold bg-amber-50 text-amber-700 px-2.5 py-1 rounded border border-amber-200">w₄ = 0.12</span>
+          </div>
+
+          <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 font-mono text-xs text-slate-800">
+            S_collab = 
+              1.00  if  2.0 ≤ μ_authors ≤ 7.0
+              0.80  if  7.0 < μ_authors ≤ 12.0
+              0.70  if  1.0 ≤ μ_authors < 2.0  (Solo or isolated author)
+              0.55  if  μ_authors > 12.0        (Hyper-authorship penalty)
+          </div>
+
+          <p class="text-xs text-slate-600 leading-relaxed">
+            <strong class="text-slate-800">Variables:</strong> <code class="bg-slate-100 px-1 py-0.5 rounded">μ_authors</code> = Average number of co-authors per publication across evaluated papers.
+          </p>
+          <div class="bg-amber-50/60 p-3 rounded-lg border border-amber-100 text-xs text-amber-950">
+            <strong>Why it matters for students:</strong> Students thrive under mentors who collaborate within realistic, close-knit research groups (2 to 7 co-authors). The metric penalizes hyper-authorship consortium papers (50+ authors where the researcher's individual contribution is diluted) as well as isolated solo publishing.
+          </div>
+        </div>
+
+        <!-- S_momentum -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <span class="w-8 h-8 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-sm font-mono">05</span>
+              <h3 class="text-lg font-bold text-slate-900">S_momentum — 3-Year Publication Recency (Weight: 15%)</h3>
+            </div>
+            <span class="font-mono text-xs font-bold bg-teal-50 text-teal-700 px-2.5 py-1 rounded border border-teal-200">w₅ = 0.15</span>
+          </div>
+
+          <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 font-mono text-xs text-slate-800">
+            S_momentum = min(1.0, W_recent_3yr / 5)
+          </div>
+
+          <p class="text-xs text-slate-600 leading-relaxed">
+            <strong class="text-slate-800">Variables:</strong> <code class="bg-slate-100 px-1 py-0.5 rounded">W_recent_3yr</code> = Number of verified publications produced within the preceding 36 months (Current Year − 3 to Present).
+          </p>
+          <div class="bg-teal-50/60 p-3 rounded-lg border border-teal-100 text-xs text-teal-950">
+            <strong>Why it matters for students:</strong> Protects students from selecting "dormant" supervisors who were prolific a decade ago but no longer maintain an active lab or grant funding. A score of 1.0 is awarded for producing at least 5 publications in the past 3 years.
+          </div>
+        </div>
+
+        <!-- S_align -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <span class="w-8 h-8 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-sm font-mono">06</span>
+              <h3 class="text-lg font-bold text-slate-900">S_align — Societal, Humanitarian & Frontier Relevance (Weight: 10%)</h3>
+            </div>
+            <span class="font-mono text-xs font-bold bg-rose-50 text-rose-700 px-2.5 py-1 rounded border border-rose-200">w₆ = 0.10</span>
+          </div>
+
+          <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 font-mono text-xs text-slate-800">
+            S_align = LLM_Score(Abstracts_Top3, Venues, Model = "openai/gpt-oss-120b") ∈ [0.00, 1.00]
+          </div>
+
+          <p class="text-xs text-slate-600 leading-relaxed">
+            <strong class="text-slate-800">Evaluation Criteria:</strong> Evaluated via Groq's <code class="font-mono text-blue-700">openai/gpt-oss-120b</code> inference engine on the abstracts of the 3 most recent papers. The prompt explicitly audits:
+          </p>
+          <ul class="text-xs text-slate-600 list-disc list-inside pl-2 space-y-1">
+            <li>Direct alignment with UN Sustainable Development Goals (SDGs) & national development in Bangladesh (health, flood mitigation, agriculture, education).</li>
+            <li>Engagement with ethical AI, renewable energy, climate resilience, or frontier computing paradigms.</li>
+            <li>Methodological rigor and originality rather than generic review synthesis.</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 3: STANDARDIZED RANK TIERS -->
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 space-y-6">
+      <div class="border-b border-slate-100 pb-4">
+        <span class="text-xs font-bold uppercase tracking-wider text-blue-600 font-mono">Capacity Classification</span>
+        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">Standardized RCI Rank Tiers</h2>
+        <p class="text-xs text-slate-500 mt-1">Based on the final score [0.00 – 1.00], researchers are classified into five objective capacity tiers.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <!-- Tier 1 -->
+        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2 flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-mono font-bold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">0.00 – 0.20</span>
+            <h3 class="font-extrabold text-sm text-slate-800 mt-2">Emerging Scholar</h3>
+            <p class="text-[11px] text-slate-600 leading-relaxed mt-1">
+              Early-stage academic or graduate student. Best suited for peer co-authorship on exploratory projects under senior co-supervision.
+            </p>
+          </div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Novice Tier</span>
+        </div>
+
+        <!-- Tier 2 -->
+        <div class="p-4 rounded-xl border border-blue-200 bg-blue-50/50 space-y-2 flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-mono font-bold text-blue-600 bg-white px-2 py-0.5 rounded border border-blue-200">0.21 – 0.40</span>
+            <h3 class="font-extrabold text-sm text-blue-950 mt-2">Developing Investigator</h3>
+            <p class="text-[11px] text-slate-600 leading-relaxed mt-1">
+              Active publishing cadence with a growing portfolio. Highly accessible mentor for undergraduate course projects and regional conferences.
+            </p>
+          </div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600">Junior Tier</span>
+        </div>
+
+        <!-- Tier 3 -->
+        <div class="p-4 rounded-xl border border-teal-200 bg-teal-50/50 space-y-2 flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-mono font-bold text-teal-700 bg-white px-2 py-0.5 rounded border border-teal-200">0.41 – 0.60</span>
+            <h3 class="font-extrabold text-sm text-teal-950 mt-2">Established Researcher</h3>
+            <p class="text-[11px] text-slate-600 leading-relaxed mt-1">
+              Solid independent publication history in indexed venues with steady citation momentum. Dependable thesis co-supervisor or primary advisor.
+            </p>
+          </div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-teal-700">Intermediate Tier</span>
+        </div>
+
+        <!-- Tier 4 -->
+        <div class="p-4 rounded-xl border border-indigo-200 bg-indigo-50/50 space-y-2 flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-mono font-bold text-indigo-700 bg-white px-2 py-0.5 rounded border border-indigo-200">0.61 – 0.80</span>
+            <h3 class="font-extrabold text-sm text-indigo-950 mt-2">Senior Principal Scholar</h3>
+            <p class="text-[11px] text-slate-600 leading-relaxed mt-1">
+              Substantial international citations, high last-author leadership, and sustained funding. Ideal primary supervisor for Capstone and M.Sc. theses.
+            </p>
+          </div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-700">Advanced Tier</span>
+        </div>
+
+        <!-- Tier 5 -->
+        <div class="p-4 rounded-xl border border-amber-300 bg-amber-50 space-y-2 flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-mono font-bold text-amber-800 bg-white px-2 py-0.5 rounded border border-amber-300">0.81 – 1.00</span>
+            <h3 class="font-extrabold text-sm text-amber-950 mt-2">Distinguished Research Fellow</h3>
+            <p class="text-[11px] text-slate-700 leading-relaxed mt-1">
+              Global scholarly impact with high citation velocity and senior lab directorship. Pinnacle guidance for ambitious Q1 journal publications and Ph.D. pathways.
+            </p>
+          </div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-amber-700">Pinnacle Tier</span>
         </div>
       </div>
     </section>
 
-    <!-- SECTION 5: DATA INTEGRITY & ORCID -->
-    <section id="orcid-integrity" class="space-y-4">
-      <h2 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
-        <span class="text-brand-400 font-mono text-lg">05.</span>
-        Data Integrity: The ORCID-First Pipeline
-      </h2>
-      <div class="text-sm text-slate-300 font-serif leading-relaxed space-y-4">
-        <p>
-          Automated academic indexing platforms (e.g., OpenAlex, Google Scholar) rely on statistical name-clustering algorithms that frequently fail on common naming patterns (e.g., "Md. Sabbir Ahmed"), conflating multiple individuals into a single bloated profile.
-        </p>
-        <p>
-          To guarantee <strong>100% data integrity with zero namesake bloat</strong>, RCI implements an ORCID-first two-stage retrieval pipeline:
-        </p>
-        <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 font-mono text-xs text-slate-300 space-y-2">
-          <div class="text-emerald-400 font-bold">1. ORCID Public Registry Query (https://pub.orcid.org/v3.0/):</div>
-          <div class="text-slate-400 pl-4">Fetches self-verified DOIs curated directly by the author.</div>
-          <div class="text-brand-400 font-bold pt-1">2. OpenAlex DOI Query (https://api.openalex.org/works?filter=doi:...):</div>
-          <div class="text-slate-400 pl-4">Queries OpenAlex strictly for those exact DOIs to extract citation velocity, abstracts, and authorships without relying on OpenAlex's internal author clustering.</div>
+    <!-- SECTION 4: INTERACTIVE RCI FORMULA SIMULATOR -->
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 space-y-6 no-print">
+      <div class="border-b border-slate-100 pb-4">
+        <span class="text-xs font-bold uppercase tracking-wider text-blue-600 font-mono">Live Sandbox</span>
+        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">Interactive RCI Formula Simulator</h2>
+        <p class="text-xs text-slate-500 mt-1">Adjust the sliders below to see how changes in peer-reviewed works, citations, authorship roles, and AI scores impact the calculated RCI score in real time.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+        <!-- Controls Column -->
+        <div class="lg:col-span-8 space-y-4">
+          <!-- Peer Reviewed Works -->
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs font-semibold text-slate-700">
+              <span>Peer-Reviewed Works (W_peer):</span>
+              <span id="val-works" class="font-mono text-blue-600">25</span>
+            </div>
+            <input type="range" id="input-works" min="0" max="100" value="25" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600" oninput="updateSim()">
+          </div>
+
+          <!-- Total Citations -->
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs font-semibold text-slate-700">
+              <span>Total Global Citations (C_total):</span>
+              <span id="val-citations" class="font-mono text-blue-600">350</span>
+            </div>
+            <input type="range" id="input-citations" min="0" max="3000" step="25" value="350" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600" oninput="updateSim()">
+          </div>
+
+          <!-- Authorship Leadership Ratio -->
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs font-semibold text-slate-700">
+              <span>Lead / Senior Supervisory Ratio:</span>
+              <span id="val-lead" class="font-mono text-blue-600">75%</span>
+            </div>
+            <input type="range" id="input-lead" min="0" max="100" value="75" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600" oninput="updateSim()">
+          </div>
+
+          <!-- Co-author span -->
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs font-semibold text-slate-700">
+              <span>Average Co-Authors Per Paper:</span>
+              <span id="val-collab" class="font-mono text-blue-600">4.0</span>
+            </div>
+            <input type="range" id="input-collab" min="1" max="15" step="0.5" value="4.0" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600" oninput="updateSim()">
+          </div>
+
+          <!-- Recent Works (3 Yr) -->
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs font-semibold text-slate-700">
+              <span>Recent Works in Last 3 Years:</span>
+              <span id="val-recent" class="font-mono text-blue-600">4</span>
+            </div>
+            <input type="range" id="input-recent" min="0" max="10" value="4" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600" oninput="updateSim()">
+          </div>
+
+          <!-- AI Alignment Score -->
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs font-semibold text-slate-700">
+              <span>LLM Alignment Score (S_align):</span>
+              <span id="val-align" class="font-mono text-blue-600">0.85</span>
+            </div>
+            <input type="range" id="input-align" min="0" max="1" step="0.05" value="0.85" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600" oninput="updateSim()">
+          </div>
+        </div>
+
+        <!-- Simulated Outcome Card -->
+        <div class="lg:col-span-4 bg-slate-50 p-6 rounded-2xl border border-slate-200 text-center space-y-4 shadow-sm">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 font-mono">Simulated RCI</span>
+            <div class="text-5xl font-extrabold text-slate-900 font-mono mt-1" id="sim-rci">0.58</div>
+            <span class="text-xs text-slate-400 font-mono">/ 1.00</span>
+          </div>
+
+          <div id="sim-badge" class="inline-block px-3 py-1 rounded-full text-xs font-extrabold tracking-wide uppercase border bg-teal-100 text-teal-900 border-teal-300">
+            Established Researcher
+          </div>
+
+          <div class="text-[11px] text-slate-600 leading-relaxed border-t border-slate-200 pt-3" id="sim-desc">
+            Consistent publishing cadence, rigorous methodology, and dependable co-supervisory capacity.
+          </div>
+
+          <a href="index.html" class="inline-flex items-center justify-center space-x-1.5 w-full px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition shadow">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+            <span>Evaluate Real Researcher</span>
+          </a>
         </div>
       </div>
     </section>
-
-    <!-- SECTION 6: REFERENCES -->
-    <section id="references" class="space-y-4 border-t border-slate-800 pt-8">
-      <h2 class="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
-        <span class="text-brand-400 font-mono text-lg">06.</span>
-        Foundational Literature &amp; References
-      </h2>
-      <ul class="text-xs text-slate-400 font-sans space-y-3 pl-4 list-decimal marker:text-slate-600 leading-relaxed">
-        <li>
-          <strong class="text-slate-300">San Francisco Declaration on Research Assessment (DORA).</strong> (2012). <em>Putting into practice principles for responsible research assessment.</em> ASCB / DORA Steering Committee. <a href="https://sfdora.org" target="_blank" class="text-brand-400 hover:underline">https://sfdora.org</a>
-        </li>
-        <li>
-          <strong class="text-slate-300">Hicks, D., Wouters, P., Waltman, L., de Rijcke, S., &amp; Rafols, I.</strong> (2015). Bibliometrics: The Leiden Manifesto for research metrics. <em>Nature</em>, 520(7548), 429–431. <a href="https://doi.org/10.1038/520429a" target="_blank" class="text-brand-400 hover:underline">https://doi.org/10.1038/520429a</a>
-        </li>
-        <li>
-          <strong class="text-slate-300">Moher, D., Bouter, L., Kleinert, S., Glasziou, P., Sham, M. H., Barbour, V., ... &amp; Dirnagl, U.</strong> (2020). The Hong Kong Principles for assessing researchers: Fostering research integrity. <em>PLOS Biology</em>, 18(7), e3000737. <a href="https://doi.org/10.1371/journal.pbio.3000737" target="_blank" class="text-brand-400 hover:underline">https://doi.org/10.1371/journal.pbio.3000737</a>
-        </li>
-        <li>
-          <strong class="text-slate-300">Seglen, P. O.</strong> (1997). Why the impact factor of journals should not be used for evaluating research. <em>BMJ</em>, 314(7079), 498–502.
-        </li>
-        <li>
-          <strong class="text-slate-300">Waltman, L.</strong> (2016). A review of the literature on citation impact indicators. <em>Journal of Informetrics</em>, 10(2), 365–391.
-        </li>
-        <li>
-          <strong class="text-slate-300">Tscharntke, T., Hochberg, M. E., Rand, T. A., Resh, V. H., &amp; Krauss, J.</strong> (2007). Author sequence and credit for contributions in multiauthored publications. <em>PLOS Biology</em>, 5(1), e18.
-        </li>
-        <li>
-          <strong class="text-slate-300">Priem, J., Piwowar, H., &amp; Orr, R.</strong> (2022). OpenAlex: A fully-open index of scholarly works, authors, venues, institutions, and concepts. <em>arXiv preprint</em> arXiv:2205.01833.
-        </li>
-      </ul>
-    </section>
-
-    <!-- CALL TO ACTION FOOTER -->
-    <div class="bg-gradient-to-r from-brand-900/40 via-indigo-900/30 to-slate-900 rounded-2xl p-8 border border-brand-500/25 text-center space-y-4">
-      <h3 class="text-xl font-bold text-white">Experience the RCI Evaluation Engine</h3>
-      <p class="text-xs text-slate-300 max-w-lg mx-auto leading-relaxed">
-        Test your ORCID iD or explore the pre-computed BRAC University faculty leaderboard on our live web portal.
-      </p>
-      <div class="pt-2">
-        <a href="./index.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs transition shadow-xl shadow-brand-600/30 active:scale-[0.98]">
-          <span>Launch Live RCI Evaluator</span>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-        </a>
-      </div>
-    </div>
 
   </main>
 
-  <!-- ==================== FOOTER ==================== -->
-  <footer class="border-t border-slate-900 bg-slate-950 py-8 px-4 text-center text-xs text-slate-500">
-    <p>© 2026 Epoch One (E1) Research Group • BRAC University</p>
-    <p class="mt-1">Released as open-access research infrastructure under the MIT License.</p>
+  <!-- FOOTER -->
+  <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <span class="font-bold text-white">BRCI</span>
+        <span>— BracU Research Capacity Index Specification</span>
+      </div>
+      <div class="flex items-center space-x-4 text-[11px]">
+        <a href="index.html" class="hover:text-white transition">Dashboard</a>
+        <span>•</span>
+        <a href="index.html#guideline" class="hover:text-white transition">User Guideline</a>
+        <span>•</span>
+        <a href="https://orcid.org" target="_blank" rel="noopener" class="hover:text-white transition">ORCID</a>
+        <span>•</span>
+        <a href="https://console.groq.com" target="_blank" rel="noopener" class="hover:text-white transition">Groq Cloud</a>
+      </div>
+    </div>
   </footer>
 
+  <!-- JAVASCRIPT SIMULATOR -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      updateSim();
+    });
+
+    function updateSim() {
+      const works = parseInt(document.getElementById("input-works").value);
+      const citations = parseInt(document.getElementById("input-citations").value);
+      const leadRatio = parseInt(document.getElementById("input-lead").value) / 100;
+      const collab = parseFloat(document.getElementById("input-collab").value);
+      const recent = parseInt(document.getElementById("input-recent").value);
+      const align = parseFloat(document.getElementById("input-align").value);
+
+      // Labels
+      document.getElementById("val-works").textContent = works;
+      document.getElementById("val-citations").textContent = citations.toLocaleString();
+      document.getElementById("val-lead").textContent = Math.round(leadRatio * 100) + "%";
+      document.getElementById("val-collab").textContent = collab.toFixed(1);
+      document.getElementById("val-recent").textContent = recent;
+      document.getElementById("val-align").textContent = align.toFixed(2);
+
+      // S_prod (0.22)
+      const sProd = (0.7 * Math.min(1, Math.log(1 + works) / Math.log(1 + 70))) +
+                    (0.3 * Math.min(1, Math.log(1 + works * 1.1) / Math.log(1 + 100)));
+
+      // S_impact (0.23)
+      const avgCit = works > 0 ? citations / works : 0;
+      const sImpact = (0.7 * Math.min(1, Math.log(1 + citations) / Math.log(1 + 2000))) +
+                      (0.3 * Math.min(1, avgCit / 30));
+
+      // S_lead (0.18)
+      const sLead = Math.min(1.0, leadRatio * 1.15);
+
+      // S_collab (0.12)
+      let sCollab = 0.6;
+      if (collab >= 2 && collab <= 7) sCollab = 1.0;
+      else if (collab > 7 && collab <= 12) sCollab = 0.8;
+      else if (collab > 12) sCollab = 0.55;
+      else if (collab < 2) sCollab = 0.70;
+
+      // S_momentum (0.15)
+      const sMomentum = Math.min(1.0, recent / 5);
+
+      // S_align (0.10)
+      const sAlign = align;
+
+      // Master Formula
+      const rci = (0.22 * sProd) + 
+                  (0.23 * sImpact) + 
+                  (0.18 * sLead) + 
+                  (0.12 * sCollab) + 
+                  (0.15 * sMomentum) + 
+                  (0.10 * sAlign);
+
+      const finalRci = Math.min(1.0, Math.max(0.0, parseFloat(rci.toFixed(2))));
+      document.getElementById("sim-rci").textContent = finalRci.toFixed(2);
+
+      // Update Tier Badge
+      const badge = document.getElementById("sim-badge");
+      const desc = document.getElementById("sim-desc");
+
+      if (finalRci >= 0.81) {
+        badge.className = "inline-block px-3 py-1 rounded-full text-xs font-extrabold tracking-wide uppercase border bg-amber-100 text-amber-900 border-amber-300";
+        badge.textContent = "Distinguished Research Fellow";
+        desc.textContent = "Top-tier academic impact with high citation velocity and senior mentorship. Pinnacle guidance for ambitious journal publications.";
+      } else if (finalRci >= 0.61) {
+        badge.className = "inline-block px-3 py-1 rounded-full text-xs font-extrabold tracking-wide uppercase border bg-indigo-100 text-indigo-900 border-indigo-300";
+        badge.textContent = "Senior Principal Scholar";
+        desc.textContent = "High global citation impact and frequent lead/senior supervision. Primary candidate for undergraduate & master's theses.";
+      } else if (finalRci >= 0.41) {
+        badge.className = "inline-block px-3 py-1 rounded-full text-xs font-extrabold tracking-wide uppercase border bg-teal-100 text-teal-900 border-teal-300";
+        badge.textContent = "Established Researcher";
+        desc.textContent = "Consistent publishing cadence, rigorous methodology, and dependable co-supervisory capacity.";
+      } else if (finalRci >= 0.21) {
+        badge.className = "inline-block px-3 py-1 rounded-full text-xs font-extrabold tracking-wide uppercase border bg-blue-100 text-blue-900 border-blue-300";
+        badge.textContent = "Developing Investigator";
+        desc.textContent = "Active publishing track, building independent research presence. Great co-author for conference papers.";
+      } else {
+        badge.className = "inline-block px-3 py-1 rounded-full text-xs font-extrabold tracking-wide uppercase border bg-slate-100 text-slate-700 border-slate-300";
+        badge.textContent = "Emerging Scholar";
+        desc.textContent = "Early-stage researcher. Suitable for peer co-authorship or exploratory joint projects under external guidance.";
+      }
+    }
+  </script>
 </body>
 </html>
